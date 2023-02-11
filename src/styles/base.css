@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Vulf Mono Light Italic';
+  src: url('/fonts/VulfMonoLightItalic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+  font-display: block;
+}
+
+html {
+  font-size: 21px;
+  @apply bg-cartridge text-indigo;
+}
+
+::selection {
+  background: theme('colors.purple');
+  color: theme('colors.cartridge.400');
+}
+
+@layer components {
+  a {
+    text-underline-offset: 0.25em;
+    text-decoration-color: theme('colors.orange');
+    @apply text-indigo underline hover:text-orange;
+  }
+}
+
+@layer utilities {
+  .text-hero {
+    font-size: 12rem;
+    font-variation-settings: "ital" 0, "wght" 800;
+    line-height: 0.85em;
+    text-transform: uppercase;
+  }
+  
+  .irregardless-wide-rounds {
+    -moz-font-feature-settings: "ss02";
+    -webkit-font-feature-settings: "ss02";
+    font-feature-settings: "ss02";
+  }
+
+  .smallcaps {
+    font-variant-caps: all-small-caps;
+    -moz-font-feature-settings: "c2sc", "smcp";
+    -webkit-font-feature-settings: "c2sc", "smcp";
+    font-feature-settings: "c2sc", "smcp";
+  }
+
+  /* Bounce In */
+  .hvr-bounce-in {
+    cursor: default;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+  }
+  .hvr-bounce-in:hover,
+  .hvr-bounce-in:focus,
+  .hvr-bounce-in:active {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+    -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+    transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+  }
+}
