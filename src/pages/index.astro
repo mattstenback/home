@@ -2,51 +2,196 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Hello">
+<Layout title="Hey, Hi, Hello">
+	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-500 h-screen mx-auto'></div>
+	<div class='z-0 absolute top-1/2 bottom-0 inset-x-0 mx-auto w-px bg-cartridge-500 gradient-fade'></div>
+	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge'></div>
+
+	<p id="matt-vertical" class="absolute top-full left-6 font-mono text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000">
+		Matt Stenback
+	</p>
+
 	<main>
-		<div class="flex justify-between py-6">
-			<p class="font-mono text-sm">
+		<div class="relative h-screen">
+			<div class="h-screen text-center relative flex justify-center items-center">
+				<h2 class="hero font-headline text-hero text-purple font-display">
+					<span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
+					<br />
+					Technolog<span class="lowercase">i</span>st
+				</h2>
+
+				<div class="absolute inset-0 flex items-center justify-center -mt-32">
+					<h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15">
+						<div class="flex flex-col items-center justify-center">
+							<div class="flex">
+								<span class="hvr-bounce-in">M</span>
+								<span class="hvr-bounce-in">a</span>
+								<span class="hvr-bounce-in">t</span>
+								<span class="hvr-bounce-in">t</span>
+							</div>
+							<div class="flex">
+								<span class="hvr-bounce-in">S</span>
+								<span class="hvr-bounce-in">t</span>
+								<span class="hvr-bounce-in">e</span>
+								<span class="hvr-bounce-in">n</span>
+								<span class="hvr-bounce-in">b</span>
+								<span class="hvr-bounce-in">a</span>
+								<span class="hvr-bounce-in">c</span>
+								<span class="hvr-bounce-in">k</span>
+							</div>
+						</div>
+					</h1>
+				</div>
+			</div>
+
+			<p class="absolute top-8 left-0 font-mono text-sm">
 				Matt Stenback
 			</p>
-			<p class="font-mono text-sm">
+
+			<p class="absolute top-8 right-0 font-mono text-sm">
 				St. John's, NL
+			</p>
+
+			<p class="absolute bottom-8 left-0 font-mono text-sm">
+				hello@mattstenback.com
+			</p>
+
+			<p class="absolute bottom-8 right-0 font-mono text-sm">
+				Cake
 			</p>
 		</div>
 
-		<div class='my-32 text-center relative'>
-			<h2 class="text-hero text-purple font-display">
-				<span class="irregardless-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
-				<br />
-				Technolog<span class="lowercase">i</span>st
-			</h2>
 
-			<h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15 z-10 absolute top-0 left-0 right-0">
-				<div class="flex flex-col items-center justify-center">
-					<div class="flex">
-						<span class="hvr-bounce-in">M</span>
-						<span class="hvr-bounce-in">a</span>
-						<span class="hvr-bounce-in">t</span>
-						<span class="hvr-bounce-in">t</span>
-					</div>
-					<div class="flex">
-						<span class="hvr-bounce-in">S</span>
-						<span class="hvr-bounce-in">t</span>
-						<span class="hvr-bounce-in">e</span>
-						<span class="hvr-bounce-in">n</span>
-						<span class="hvr-bounce-in">b</span>
-						<span class="hvr-bounce-in">a</span>
-						<span class="hvr-bounce-in">c</span>
-						<span class="hvr-bounce-in">k</span>
-					</div>
-				</div>
-			</h1>
+		<!-- About -->
+
+		<div class="flex justify-center pt-32">
+			<h3 class="font-headline text-9xl text-purple  text-vertical whitespace-nowrap z-10 pr-8">
+				Hello
+			</h3>
 		</div>
+
+		<div class="pt-32 grid grid-cols-9 gap-4">
+			<div class="col-span-2 col-start-3">
+				<img src="/images/matt.png" alt="Matt Stenback" class="w-full" />
+			</div>
+			<div class="col-span-1">
+			</div>
+			<div class="col-span-4">
+				<p class="text-xl mb-4">
+					<span class="smallcaps">I’m a designer and developer</span> with a particular interest in UX, AI and security. I get up in the morning for a big vision, and I stay up late for the small details.
+				</p>
+				<p class="text-xl mb-4">
+					I’ve been making software for 15 years. Currently I lead the application development team at Sequence Bio; building tools that support genetic research.
+				</p>
+				<p class="text-xl mb-4">
+					In true generalist fashion, my work is a broad sampling of code, pixels, diagrams, and documents. From Figma, through the application stack, down to the infrastructure, and all the glue in-between.
+				</p>
+				<p class="text-xl">
+					I also <a href="#">like to bake</a>.
+				</p>
+			</div>
+		</div>
+
+
+		<!-- Journal -->
+
+		<div class="flex justify-center pt-32">
+			<h3 class="font-headline text-9xl text-purple  text-vertical whitespace-nowrap z-10 pr-8">
+				Journal
+			</h3>
+		</div>
+
 		
-		<p class="font-serif">
-			<span class="smallcaps">Hey there</span>, some body copy.
-			<a href="#" class="underline hover:text-orange">
-				This is a link
-			</a>.
-		</p>
+		<div class="py-32">
+			<div class="grid grid-cols-9 gap-4">
+				<div class="col-span-4 col-start-6">
+					<h4 class="text-3xl">
+						<a href="#">
+							Technology doesn't improve automatically
+						</a>
+					</h4>
+					<p class="font-mono text-xs mt-4">
+						#Philosophy
+					</p>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-9 gap-4">
+				<div class="col-span-4 text-right">
+					<h4 class="text-3xl">
+						<a href="#">
+							Playing with ChatGPT
+						</a>
+					</h4>
+					<p class="font-mono text-xs mt-4">
+						#AI
+					</p>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-9 gap-4">
+				<div class="col-span-4 col-start-6">
+					<h4 class="text-3xl">
+						<a href="#">
+							Chocolate Cake
+						</a>
+					</h4>
+					<p class="font-mono text-xs mt-4">
+						#Recipie
+					</p>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Bye -->
+		
+		<div class="flex justify-center py-32">
+			<h3 class="font-headline text-9xl text-purple  text-vertical whitespace-nowrap z-10 pr-8">
+				Thanks for stopping by
+			</h3>
+		</div>
+
 	</main>
+
+	<script>
+		let root = document.documentElement;
+
+		root.addEventListener("mousemove", e => {
+			var w = window.innerWidth;
+			var h = window.innerHeight; 
+
+			let xSign = e.clientX > w/2 ? 1 : -1;
+			let ySign = e.clientY > h/2 ? 1 : -1;
+
+			// Calculate the distance from the center of the screen as an integer
+			let xDist = Math.round(Math.abs(w/2 - e.clientX));
+			let yDist = Math.round(Math.abs(h/2 - e.clientY));
+
+			console.log(xDist*xSign, yDist*ySign);
+
+		  root.style.setProperty('--offsetX', (xDist * xSign).toString());
+		  root.style.setProperty('--offsetY', (yDist * ySign).toString());
+		});
+	</script>
+
+	<script>
+		const observerOptions = {
+			root: null,
+			rootMargin: '0px',
+			threshold: 1,
+		};
+
+		function observerCallback(entries) {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('!text-orange');
+				}
+			});
+		}
+
+		const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+		observer.observe(document.querySelector('#matt-vertical'));
+	</script>
 </Layout>

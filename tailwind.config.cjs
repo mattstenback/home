@@ -18,9 +18,6 @@ module.exports = {
 				'display': ['irregardless-variable', 'sans-serif'],
 				'mono': ['Vulf Mono Light Italic', 'monospace'],
 			},
-			fontSize: {
-				sm: '0.65rem',
-			},
 			rotate: {
         '15': '15deg',
       }

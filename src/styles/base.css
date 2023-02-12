@@ -11,8 +11,7 @@
 }
 
 html {
-  font-size: 21px;
-  @apply bg-cartridge text-indigo;
+  @apply bg-cartridge text-indigo font-serif;
 }
 
 ::selection {
@@ -22,24 +21,34 @@ html {
 
 @layer components {
   a {
-    text-underline-offset: 0.25em;
-    text-decoration-color: theme('colors.orange');
-    @apply text-indigo underline hover:text-orange;
+    @apply text-indigo underline underline-offset-4 decoration-orange hover:text-orange;
   }
 }
 
 @layer utilities {
   .text-hero {
-    font-size: 12rem;
-    font-variation-settings: "ital" 0, "wght" 800;
-    line-height: 0.85em;
-    text-transform: uppercase;
+    font-size: 13rem;
   }
   
-  .irregardless-wide-rounds {
+  .font-headline {
+    @apply font-display uppercase;
+    font-variation-settings: "ital" 0, "wght" 800;
+    -moz-font-feature-settings: "salt";
+    -webkit-font-feature-settings: "salt";
+    font-feature-settings: "salt";
+    line-height: 0.85em;
+  }
+
+  .ir-wide-rounds {
     -moz-font-feature-settings: "ss02";
     -webkit-font-feature-settings: "ss02";
     font-feature-settings: "ss02";
+  }
+
+  .ir-stylistic-alts {
+    -moz-font-feature-settings: "salt";
+    -webkit-font-feature-settings: "salt";
+    font-feature-settings: "salt";
   }
 
   .smallcaps {
@@ -47,6 +56,10 @@ html {
     -moz-font-feature-settings: "c2sc", "smcp";
     -webkit-font-feature-settings: "c2sc", "smcp";
     font-feature-settings: "c2sc", "smcp";
+  }
+
+  .text-vertical {
+    writing-mode: vertical-rl;
   }
 
   /* Bounce In */
@@ -65,5 +78,39 @@ html {
     transform: scale(1.2);
     -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
     transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+  }
+
+  :root {
+    --offsetX: 0;
+    --offsetY: 0;
+  }
+
+  .hero {
+    transition: all 0.2s;
+    transform-origin: center;
+    transform:
+        translateX(calc(((var(--offsetX)) * 0.02) * 1px))
+        translateY(calc(((var(--offsetY)) * 0.02) * 1px))
+        rotateX(calc((var(--offsetY)) * 0.02 * -1deg))
+        rotateY(calc((var(--offsetX)) * 0.02 *  1deg));
+  }
+
+  /* Gradient line animation  */
+  @keyframes gradient-fade {
+    0% {
+      background-position: 50% 0%;
+    }
+    50% {
+      background-position: 50% 100%;
+    }
+    100% {
+      background-position: 50% 0%;
+    }
+  }
+
+  .gradient-fade {
+    background: linear-gradient(180deg, theme('colors.purple'), theme('colors.cartridge.500'));
+    animation: gradient-fade 2s ease infinite;
+    background-size: 300% 300%;
   }
 }
