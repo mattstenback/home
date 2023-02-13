@@ -4,17 +4,14 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Hey, Hi, Hello">
 	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-500 h-screen mx-auto'></div>
-	<div class='z-0 absolute top-1/2 bottom-0 inset-x-0 mx-auto w-px bg-cartridge-500 gradient-fade'></div>
 	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge'></div>
 
-	<p id="matt-vertical" class="absolute top-full left-6 font-mono text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000">
-		Matt Stenback
-	</p>
+	<p id="matt-stenback" class="fixed top-8 left-6 font-mono text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0">Matt Stenback</p>
 
 	<main>
 		<div class="relative h-screen">
 			<div class="h-screen text-center relative flex justify-center items-center">
-				<h2 class="hero font-headline text-hero text-purple font-display">
+				<h2 id="hero" class="hero font-headline text-hero text-purple font-display">
 					<span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
 					<br />
 					Technolog<span class="lowercase">i</span>st
@@ -44,19 +41,19 @@ import Layout from '../layouts/Layout.astro';
 				</div>
 			</div>
 
-			<p class="absolute top-8 left-0 font-mono text-sm">
+			<p class="hero-meta absolute top-8 left-0 font-mono text-sm transition-all opacity-0 translate-y-10  duration-1000">
 				Matt Stenback
 			</p>
 
-			<p class="absolute top-8 right-0 font-mono text-sm">
+			<p class="hero-meta absolute top-8 right-0 font-mono text-sm transition-all opacity-0 translate-y-10  duration-1000">
 				St. John's, NL
 			</p>
 
-			<p class="absolute bottom-8 left-0 font-mono text-sm">
+			<p class="hero-meta absolute bottom-8 left-0 font-mono text-sm transition-all opacity-0 -translate-y-10  duration-1000">
 				hello@mattstenback.com
 			</p>
 
-			<p class="absolute bottom-8 right-0 font-mono text-sm">
+			<p class="hero-meta absolute bottom-8 right-0 font-mono text-sm transition-all opacity-0 -translate-y-10  duration-1000">
 				Cake
 			</p>
 		</div>
@@ -185,13 +182,21 @@ import Layout from '../layouts/Layout.astro';
 		function observerCallback(entries) {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
-					entry.target.classList.add('!text-orange');
+					document.querySelector('#matt-stenback').classList.remove('!translate-x-0', '!opacity-100');
+					const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
+						el.classList.add( '!translate-y-0', '!opacity-100');
+					});
+				}
+				else {
+					document.querySelector('#matt-stenback').classList.add('!translate-x-0', '!opacity-100');
+					const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
+						el.classList.remove('!translate-y-0', '!opacity-100');
+					});
 				}
 			});
 		}
 
 		const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-		observer.observe(document.querySelector('#matt-vertical'));
+		observer.observe(document.querySelector('#hero'));
 	</script>
 </Layout>
