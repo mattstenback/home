@@ -1,0 +1,19 @@
+---
+const { orientation, title, tags, url } = Astro.props
+---
+
+<div class="grid grid-cols-9 gap-4 mb-4">
+  <div class={`col-span-4 ${orientation === 'right' ? 'col-start-6' : 'text-right'}`}>
+    <h4 class="text-3xl">
+      <a href={url}>
+        { title }
+      </a>
+    </h4>
+
+    <div class={`flex gap-x-4 font-mono text-xs mt-4 ${orientation === 'left' ? 'justify-end' : ''}`}>
+      { tags.map((tag) => {
+       return <span>#{tag}</span>;
+      }) }
+    </div>
+  </div>
+</div>

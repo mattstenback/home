@@ -1,0 +1,104 @@
+---
+---
+
+<div class="relative h-screen">
+  <div class="h-screen text-center relative flex justify-center items-center">
+    <h2 id="hero" class="hero font-headline text-hero text-purple font-display">
+      <span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
+      <br />
+      Technolog<span class="lowercase">i</span>st
+    </h2>
+
+    <div class="absolute inset-0 flex items-center justify-center -mt-32">
+      <h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15">
+        <div class="flex flex-col items-center justify-center">
+          <div class="flex">
+            <span class="hvr-bounce-in">M</span>
+            <span class="hvr-bounce-in">a</span>
+            <span class="hvr-bounce-in">t</span>
+            <span class="hvr-bounce-in">t</span>
+          </div>
+          <div class="flex">
+            <span class="hvr-bounce-in">S</span>
+            <span class="hvr-bounce-in">t</span>
+            <span class="hvr-bounce-in">e</span>
+            <span class="hvr-bounce-in">n</span>
+            <span class="hvr-bounce-in">b</span>
+            <span class="hvr-bounce-in">a</span>
+            <span class="hvr-bounce-in">c</span>
+            <span class="hvr-bounce-in">k</span>
+          </div>
+        </div>
+      </h1>
+    </div>
+  </div>
+
+  <p class="hero-meta absolute top-8 left-0 font-mono text-sm transition-all opacity-0 translate-y-10  duration-1000">
+    Matt Stenback
+  </p>
+
+  <p class="hero-meta absolute top-8 right-0 font-mono text-sm transition-all opacity-0 translate-y-10  duration-1000">
+    St. John's, NL
+  </p>
+
+  <p class="hero-meta absolute bottom-8 left-0 font-mono text-sm transition-all opacity-0 -translate-y-10  duration-1000">
+    <a href="mailto:mstenback@gmail.com">
+      hello@mattstenback.com
+    </a>
+  </p>
+
+  <p class="hero-meta absolute bottom-8 right-0 font-mono text-sm transition-all opacity-0 -translate-y-10  duration-1000">
+    <a href="https://www.instagram.com/stenback" target="_blank">
+      Instagram
+    </a>
+  </p>
+</div>
+
+<script>
+  let root = document.documentElement;
+
+  root.addEventListener("mousemove", e => {
+    var w = window.innerWidth;
+    var h = window.innerHeight; 
+
+    let xSign = e.clientX > w/2 ? 1 : -1;
+    let ySign = e.clientY > h/2 ? 1 : -1;
+
+    // Calculate the distance from the center of the screen as an integer
+    let xDist = Math.round(Math.abs(w/2 - e.clientX));
+    let yDist = Math.round(Math.abs(h/2 - e.clientY));
+
+    console.log(xDist*xSign, yDist*ySign);
+
+    root.style.setProperty('--offsetX', (xDist * xSign).toString());
+    root.style.setProperty('--offsetY', (yDist * ySign).toString());
+  });
+</script>
+
+<script>
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 1,
+  };
+
+  function observerCallback(entries) {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        document.querySelector('#matt-stenback').classList.remove('!translate-x-0', '!opacity-100');
+        const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
+          el.classList.add( '!translate-y-0', '!opacity-100');
+        });
+      }
+      else {
+        document.querySelector('#matt-stenback').classList.add('!translate-x-0', '!opacity-100');
+        const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
+          el.classList.remove('!translate-y-0', '!opacity-100');
+        });
+      }
+    });
+  }
+
+  const observer = new IntersectionObserver(observerCallback, observerOptions);
+  observer.observe(document.querySelector('#hero'));
+</script>

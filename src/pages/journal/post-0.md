@@ -1,12 +1,13 @@
 ---
-title: 'My First Blog Post'
+layout: '../../layouts/Article.astro'
+title: "Technology doesn't improve automatically"
 pubDate: 2022-11-06
 description: 'This is the first post of my new Astro blog.'
 author: 'Astro Learner'
 image:
     url: 'https://astro.build/assets/blog/astro-1-release-update/cover.jpeg' 
     alt: 'The Astro logo with the word One.'
-tags: ["astro", "blogging", "learning in public"]
+tags: ["Philosophy"]
 ---
 
 # My First Blog Post

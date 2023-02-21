@@ -15,13 +15,12 @@ html {
 }
 
 ::selection {
-  background: theme('colors.purple');
-  color: theme('colors.cartridge.400');
+  background: theme('colors.cartridge.500');
 }
 
 @layer components {
   a {
-    @apply text-indigo underline underline-offset-4 decoration-orange hover:text-orange;
+    @apply text-indigo underline underline-offset-4 decoration-orange hover:text-orange transition-colors duration-100 ease-linear;
   }
 }
 

@@ -1,0 +1,18 @@
+---
+import JournalEntry from "./JournalEntry.astro";
+
+const entries = await Astro.glob('../pages/journal/*.md');
+---
+
+<div class="flex justify-center pt-32">
+  <h3 class="font-headline text-9xl text-purple  text-vertical whitespace-nowrap z-10 pr-8">
+    Journal
+  </h3>
+</div>
+
+<div class="py-32">
+  {entries.map((entry, index) => {
+    const orientation = index % 2 === 0 ? 'right' : 'left';
+    return <JournalEntry title={entry.frontmatter.title} url={entry.url} tags={entry.frontmatter.tags} orientation={orientation} />;
+  })}
+</div>
