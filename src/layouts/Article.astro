@@ -1,11 +1,17 @@
 ---
 import '../styles/base.css';
+import Footer from '../components/Footer.astro';
+import Paragraph from '../components/md/Paragraph.astro';
+import Subheading from '../components/md/Subheading.astro';
+export const components = {p: Paragraph, h2: Subheading};
 
 export interface Props {
 	title: string;
 }
 
 const { title, frontmatter } = Astro.props;
+
+const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 ---
 
 <!DOCTYPE html>
@@ -20,7 +26,72 @@ const { title, frontmatter } = Astro.props;
 	</head>
 
 	<body class="bg-cartridge">
-		<h1 class="font-headline text-9xl text-purple">{frontmatter.title}</h1>
-		<slot />
+		<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-500 h-screen mx-auto'></div>
+
+		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline">Matt Stenback</a>
+
+		<div class="container mx-auto px-10">
+			<div class="relative bg-cartridge-400 z-10 pb-32">
+				<div class="pt-8 grid grid-cols-9 gap-4">
+					<div class="col-span-4">
+						<div class="flex justify-between">
+							<a href="/" id="matt-stenback" class="font-mono text-sm no-underline">
+								Matt Stenback
+							</a>
+
+							<p class="font-mono text-sm">
+								{publishedDate}
+							</p>
+						</div>
+					</div>	
+				</div>	
+
+				<div class="mt-32 grid grid-cols-9 gap-4">
+					<div class="col-span-4 text-right">
+						<h1 class="font-headline text-9xl text-purple pt-2">
+							{frontmatter.title}
+						</h1>
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-32 grid grid-cols-9 gap-4">
+				<div class="col-span-4 text-right">
+					<div class="flex gap-x-4 font-mono text-sm justify-end">
+						{ frontmatter.tags.map((tag) => {
+						return <span>#{tag}</span>;
+						}) }
+					</div>
+				</div>
+
+				<div class="col-span-4 col-start-6 text-xl">
+					<slot />
+				</div>
+			</div>
+		</div>
+
+		<Footer />
+
+		<script>
+			const observerOptions = {
+				root: null,
+				rootMargin: '0px',
+				threshold: 1,
+			};
+
+			function observerCallback(entries) {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						document.querySelector('#matt-stenback-vertical').classList.remove('!translate-x-0', '!opacity-100');
+					}
+					else {
+						document.querySelector('#matt-stenback-vertical').classList.add('!translate-x-0', '!opacity-100');
+					}
+				});
+			}
+
+			const observer = new IntersectionObserver(observerCallback, observerOptions);
+			observer.observe(document.querySelector('#matt-stenback'));
+		</script>
 	</body>
 </html>

@@ -1,22 +1,23 @@
 ---
-layout: '../../layouts/Article.astro'
 title: "Technology doesn't improve automatically"
-pubDate: 2022-11-06
+published: 2022-11-06
 description: 'This is the first post of my new Astro blog.'
 author: 'Astro Learner'
 image:
     url: 'https://astro.build/assets/blog/astro-1-release-update/cover.jpeg' 
     alt: 'The Astro logo with the word One.'
 tags: ["Philosophy"]
+
+layout: '../../layouts/Article.astro'
 ---
 
-# My First Blog Post
+import Paragraph from '../../components/md/Paragraph.astro';
+import Subheading from '../../components/md/Subheading.astro';
+export const components = {p: Paragraph, h2: Subheading};
 
-Published on: 2022-07-01
+## My First Blog Post
 
-Welcome to my _new blog_ about learning Astro! Here, I will share my learning journey as I build a new website.
-
-## What I've accomplished
+<span class="smallcaps">Welcome to my _new blog_</span> about learning Astro! Here, I will share my learning journey as I build a new website.
 
 1. **Installing Astro**: First, I created a new Astro project and set up my online accounts.
 
@@ -24,6 +25,4 @@ Welcome to my _new blog_ about learning Astro! Here, I will share my learning jo
 
 3. **Making Blog Posts**: This is my first blog post! I now have Astro pages and Markdown posts!
 
-## What's next
-
-I will finish the Astro tutorial, and then keep adding more posts. Watch this space for more to come.
+I will finish the Astro tutorial, and then keep adding more posts. Watch this space for more to come.entries
