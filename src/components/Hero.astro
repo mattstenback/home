@@ -1,32 +1,34 @@
 <div class="relative h-screen">
-  <div class="h-screen text-center relative flex justify-center items-center">
-    <h2 id="hero" class="hero font-headline text-hero text-purple font-display">
-      <span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
-      <br />
-      Technolog<span class="lowercase">i</span>st
-    </h2>
+  <div class="h-screen text-center relative flex justify-center items-center max-sm:overflow-x-hidden">
+    <div class="max-sm:rotate-90 max-sm:-ml-10 max-sm:scale-90">
+      <h2 id="hero" class="hero font-headline text-hero text-purple font-display">
+        <span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
+        <br />
+        Technolog<span class="lowercase">i</span>st
+      </h2>
 
-    <div class="absolute inset-0 flex items-center justify-center -mt-32">
-      <h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15">
-        <div class="flex flex-col items-center justify-center">
-          <div class="flex">
-            <span class="hvr-bounce-in">M</span>
-            <span class="hvr-bounce-in">a</span>
-            <span class="hvr-bounce-in">t</span>
-            <span class="hvr-bounce-in">t</span>
+      <div class="absolute inset-0 flex items-center justify-center -mt-32">
+        <h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15">
+          <div class="flex flex-col items-center justify-center">
+            <div class="flex">
+              <span class="hvr-bounce-in">M</span>
+              <span class="hvr-bounce-in">a</span>
+              <span class="hvr-bounce-in">t</span>
+              <span class="hvr-bounce-in">t</span>
+            </div>
+            <div class="flex">
+              <span class="hvr-bounce-in">S</span>
+              <span class="hvr-bounce-in">t</span>
+              <span class="hvr-bounce-in">e</span>
+              <span class="hvr-bounce-in">n</span>
+              <span class="hvr-bounce-in">b</span>
+              <span class="hvr-bounce-in">a</span>
+              <span class="hvr-bounce-in">c</span>
+              <span class="hvr-bounce-in">k</span>
+            </div>
           </div>
-          <div class="flex">
-            <span class="hvr-bounce-in">S</span>
-            <span class="hvr-bounce-in">t</span>
-            <span class="hvr-bounce-in">e</span>
-            <span class="hvr-bounce-in">n</span>
-            <span class="hvr-bounce-in">b</span>
-            <span class="hvr-bounce-in">a</span>
-            <span class="hvr-bounce-in">c</span>
-            <span class="hvr-bounce-in">k</span>
-          </div>
-        </div>
-      </h1>
+        </h1>
+      </div>
     </div>
   </div>
 
@@ -40,7 +42,7 @@
 
   <p class="hero-meta absolute bottom-8 left-0 font-mono text-sm transition-all opacity-0 -translate-y-10  duration-1000">
     <a href="mailto:mstenback@gmail.com">
-      hello@mattstenback.com
+      Email
     </a>
   </p>
 
@@ -52,12 +54,21 @@
 </div>
 
 <script>
-  let root = document.documentElement;
+  const root = document.documentElement;
+  let throttle = false;
+  const throttleInterval = 20; 
 
+  // Calculate the offset of the mouse position relative to the center of the screen and apply it to CSS variables to animate the hero text
   root.addEventListener("mousemove", e => {
-    var w = window.innerWidth;
-    var h = window.innerHeight; 
+    if (throttle) return;
 
+    throttle = true;
+    setTimeout(() => throttle = false, throttleInterval);
+
+    const w = window.innerWidth;
+    const h = window.innerHeight; 
+
+    // Determine the xy orientation relative to the center of the screen
     let xSign = e.clientX > w/2 ? 1 : -1;
     let ySign = e.clientY > h/2 ? 1 : -1;
 
@@ -65,7 +76,7 @@
     let xDist = Math.round(Math.abs(w/2 - e.clientX));
     let yDist = Math.round(Math.abs(h/2 - e.clientY));
 
-    console.log(xDist*xSign, yDist*ySign);
+    console.log('tracking');
 
     root.style.setProperty('--offsetX', (xDist * xSign).toString());
     root.style.setProperty('--offsetY', (yDist * ySign).toString());

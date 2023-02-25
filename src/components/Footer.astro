@@ -2,30 +2,22 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<div class="container mx-auto px-10">
-  <div class="flex justify-center pt-32 pb-64">
-    <h3 class="font-headline text-9xl text-purple  text-vertical whitespace-nowrap z-10 pr-8">
-      Thanks for stopping by
-    </h3>
-  </div>
+<footer class="container mx-auto px-10 pt-64 pb-8">
+  <div class="md:flex md:justify-between max-sm:pl-7">
+    <button id="colophon-toggle" class="font-mono text-sm underline underline-offset-4 decoration-orange hover:text-orange transition-colors duration-100 ease-linear">
+      Colophon
+    </button>
 
-  <div class="relative">
-    <p class="absolute bottom-8 left-0 font-mono text-sm">
-      <a href="mailto:mstenback@gmail.com">
-        Colophon
-      </a>
-    </p>
-
-    <p class="absolute bottom-8 right-0 font-mono text-sm">
+    <p class="font-mono text-sm max-sm:mt-2">
       © {currentYear} Matt Stenback
     </p>
   </div>
-</div>
+</footer>
 
 <!-- Colophon -->
   
-<footer class="py-32 bg-cartridge-500 hidden">
-  <div class="container mx-auto px-10">
+<div id="colophon" class="py-32 bg-cartridge-500 hidden">
+  <div class="container mx-auto md:px-10 max-sm:pl-16 max-sm:pr-10">
     <h4 class="font-mono text-3xl text-cartridge-400 mb-8">
       Colophon
     </h4>
@@ -40,11 +32,21 @@ const currentYear = new Date().getFullYear();
       Designed using three typefaces by OhNo! Typography: Irregardless for headlines, Swear for body text, and Vulf Mono for small text and accents
     </p>
     <p>
-      Colors inspired by SNES
+      Aesthetics inspired by SNES
     </p>
 
     <p>
       This page loaded in 53ms
     </p>
   </div>
-</footer>
+</div>
+
+<script>
+  const colophonToggle = document.querySelector('#colophon-toggle');
+  const colophon = document.querySelector('#colophon');
+
+  colophonToggle.addEventListener('click', () => {
+    colophon.classList.toggle('hidden');
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+</script>
