@@ -4,11 +4,12 @@ import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Journal from '../components/Journal.astro';
 import Footer from '../components/Footer.astro';
+import Bookmarks from '../components/Bookmarks.astro';
 ---
 
 <Layout title="Hey, Hi, Hello">
-	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-500 h-screen mx-auto max-sm:hidden'></div>
-	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge max-sm:hidden'></div>
+	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-500 h-screen mx-auto max-md:hidden'></div>
+	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge max-md:hidden'></div>
 
 	<p id="matt-stenback" class="fixed top-8 left-6 font-mono text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0">Matt Stenback</p>
 
@@ -16,6 +17,7 @@ import Footer from '../components/Footer.astro';
 		<Hero />
 		<About />
 		<Journal />
+		<Bookmarks />
 
 		<div class="flex pt-32 md:justify-center max-sm:pl-1">
 			<h3 class="font-headline text-9xl text-purple text-vertical whitespace-nowrap z-10 pr-8">

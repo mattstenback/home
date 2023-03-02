@@ -12,6 +12,7 @@ const entries = await Astro.glob('../pages/journal/*.mdx');
 <div class="py-32 max-sm:pl-7">
   {entries.map((entry, index) => {
     const orientation = index % 2 === 0 ? 'right' : 'left';
+
     return <JournalEntry title={entry.frontmatter.title} url={entry.url} tags={entry.frontmatter.tags} orientation={orientation} />;
   })}
 </div>

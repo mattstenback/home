@@ -1,0 +1,44 @@
+[
+  {
+    "number": 1,
+    "title": "OH no Type Co.",
+    "url": "https://ohnotype.co/",
+    "tags": ["Typography"],
+    "comments": "This man don't miss. All the fonts on my site are from Oh no, and I can't wait to use more of them in future projects."
+  },
+  {
+    "number": 2,
+    "title": "MiiR Camp Cup",
+    "url": "https://www.miir.com/products/camp-cup-vacuum-insulated-stainless-steel?variant=39490450784330",
+    "tags": ["Gear"],
+    "comments": "Fantastic mug for WFH. I have two. Keeps coffee at a drinkable temp for hours, lid prevents spills, and it's dishwasher safe. C'mon."
+  },
+  {
+    "number": 3,
+    "title": "Diablo IV Lofi",
+    "url": "https://www.youtube.com/watch?v=P3n8vT49ueg",
+    "tags": ["Music"],
+    "comments": "I love a good lofi track in the background while I work, and very hype for Diablo IV. Pleased about this project."
+  },
+  {
+    "number": 4,
+    "title": "Font Review Journal",
+    "url": "https://fontreviewjournal.com/",
+    "tags": ["Typography"],
+    "comments": "A killer project for font nerds. Bethany Heck's enthusiasm for typography and design never fails to get me excited to think critically and make things."
+  },
+  {
+    "number": 5,
+    "title": "The Manual",
+    "url": "https://alwaysreadthemanual.com/index.html",
+    "tags": ["Design"],
+    "comments": "A tremendous resource for designers. The project is on a hiatus for now, but they've made everythinhg available for free online."
+  },
+  {
+    "number": 6,
+    "title": "Mini36 Keyboard",
+    "url": "https://controller.works/products/mini36-low-profile-ergonomic-keyboard",
+    "tags": ["Keyboards"],
+    "comments": "I have the black version of this keyboard and couldn't be happier. Definitely an endgame board for my split ergo peeps."
+  }
+]
