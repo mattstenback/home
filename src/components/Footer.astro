@@ -4,7 +4,7 @@ const currentYear = new Date().getFullYear();
 
 <footer class="container mx-auto px-10 pt-64 pb-8">
   <div class="md:flex md:justify-between max-sm:pl-7">
-    <button id="colophon-toggle" class="font-mono text-sm underline underline-offset-4 decoration-orange hover:text-orange transition-colors duration-100 ease-linear">
+    <button id="colophon-toggle" class="font-mono text-sm underline underline-offset-4 decoration-orange hover:text-orange transition-colors duration-100 ease-linear cursor-none">
       Colophon
     </button>
 
@@ -18,26 +18,32 @@ const currentYear = new Date().getFullYear();
   
 <div id="colophon" class="py-32 bg-cartridge-600 hidden">
   <div class="container mx-auto md:px-10 max-sm:pl-16 max-sm:pr-10">
-    <h4 class="font-mono text-3xl text-cartridge-400 mb-8">
-      Colophon
-    </h4>
+    <div class="grid grid-cols-9 gap-4 mb-4">
+      <div class= "md:col-span-5 md:col-start-3">
+        <h4 class="font-mono text-3xl text-indigo mb-8">
+          Colophon
+        </h4>
 
-    <p>
-      Built with Astro, React and Tailwind
-    </p>
-    <p>
-      Hosted with Netlify
-    </p>
-    <p>
-      Designed using three typefaces by OhNo! Typography: Irregardless for headlines, Swear for body text, and Vulf Mono for small text and accents
-    </p>
-    <p>
-      Aesthetics inspired by SNES
-    </p>
-
-    <p>
-      This page loaded in 53ms
-    </p>
+        <p class="mb-4">
+          I had a lot of fun making this. Over the course of a couple of months I ran through probably 60-70 layouts with at least a dozen completely different styles before finding my way to this SNES inspired direction.
+        </p>
+        <p class="mb-4">
+          It's surprisingly challenging to find an aesthetic that feels like a reflection of yourself. I'm not sure I've quite nailed it yet, but I'm happy with where I landed for now. It's fun, and it's honest. 
+        </p>
+        <p class="mb-4">
+          In the process, I found Oh no Type Co. and was immediately hooked. Every typeface he makes has so much personality, the rest of the design can just build around them. They're like design cheat codes and I can't wait to play with more. I used Irregardless for headlines, Swear for body text, and Vulf Mono for small text and accents.
+        </p>
+        <p class="mb-4">
+          From the tech side of things, the site is built with Astro, Tailwind, and some good ol' vanilla JS in script tags. I've been a fan of Tailwind since the early days and it continues to be a pleasure to work with. First time using Astro, but I'm already a big fan. It's a thin framework with great DX, and its primary design goal is to produce pages that are fast for end-users by default. A perfect fit for a site like this.
+        </p>
+        <p class="mb-4">
+          Lastly, the site is hosted on Netlify. Their DX is also fantastic, and Astro has support for deploying to Netlify out of the box.
+        </p>
+        <p>
+          Thanks for reading! Fire me an email if you have any questions, feedback, or just want to say hi.
+        </p>
+      </div>
+    </div>
   </div>
 </div>
 
