@@ -63,7 +63,6 @@ html {
 
   /* Bounce In */
   .hvr-bounce-in {
-    cursor: default;
     -webkit-transform: perspective(1px) translateZ(0);
     transform: perspective(1px) translateZ(0);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0);
@@ -112,4 +111,22 @@ html {
     animation: gradient-fade 2s ease infinite;
     background-size: 300% 300%;
   }
+}
+
+/* Tippy.js */
+
+.tippy-box[data-theme~='matt'] {
+  @apply bg-cartridge-500 text-indigo font-mono p-1;
+}
+.tippy-box[data-theme~='matt'][data-placement^='top'] > .tippy-arrow::before {
+  @apply border-t-cartridge-500;
+}
+.tippy-box[data-theme~='matt'][data-placement^='bottom'] > .tippy-arrow::before {
+  @apply border-b-cartridge-500;
+}
+.tippy-box[data-theme~='matt'][data-placement^='left'] > .tippy-arrow::before {
+  @apply border-l-cartridge-500;
+}
+.tippy-box[data-theme~='matt'][data-placement^='right'] > .tippy-arrow::before {
+  @apply border-r-cartridge-500;
 }

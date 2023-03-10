@@ -1,0 +1,118 @@
+<div class="cursor">
+   <div class="cursor-dot"></div>
+   <div class="cursor-border"></div>
+</div>
+
+<script>
+  import CustomCursor from 'custom-cursor.js'; 
+
+  new CustomCursor('.cursor', {
+    hideTrueCursor: true,
+    focusElements: [
+      {
+        elements: 'img, #matt-stenback-vertical, .hvr-bounce-in, .font-headline', 
+        focusClass: 'cursor--subtle-focused'
+      },
+      {
+        elements: 'button, a', 
+        focusClass: 'cursor--link-focused'
+      },
+    ],
+  })
+    .setPosition(-30, -30)
+    .initialize()
+</script>
+
+<style>
+  .cursor {
+    color: #ff5050;
+    display: none;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    top: 0;
+    left: 0;
+    position: fixed;
+    will-change: transform;
+    z-index: 1000;
+  }
+
+  .cursor-border {
+    @apply border border-cartridge-600;
+    position: absolute;
+    box-sizing: border-box;
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    height: 60px;
+    width: 60px;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    transition: all 360ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .cursor-dot {
+    @apply bg-purple;
+    position: absolute;
+    box-sizing: border-box;
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    height: 16px;
+    width: 16px;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    transition: all 360ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .cursor.cursor--initialized {
+    display: block;
+  }
+
+  .cursor.cursor--off-screen {
+    opacity: 0;
+  }
+
+  .cursor.cursor--clicking .cursor-border {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .cursor.cursor--clicking .cursor-dot {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .cursor.cursor--focused .cursor-border {
+    width: 90px;
+    height: 90px;
+  }
+
+  .cursor.cursor--link-focused .cursor-border {
+    width: 90px;
+    height: 90px;
+    @apply border-orange;
+  }
+
+  .cursor.cursor--link-focused .cursor-dot {
+    @apply bg-cartridge-600 bg-opacity-0;
+  }
+
+ .cursor.cursor--subtle-focused .cursor-border {
+    width: 30px;
+    height: 30px;
+    @apply bg-cartridge-600 bg-opacity-50 border-none;
+  }
+
+  .cursor.cursor--subtle-focused .cursor-dot {
+    width: 30px;
+    height: 30px;
+    @apply bg-cartridge-600 bg-opacity-0;
+  }
+</style>

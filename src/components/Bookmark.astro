@@ -1,5 +1,5 @@
 ---
-const { number, title, tags, url, orientation } = Astro.props;
+const { number, title, tags, url, comment, orientation } = Astro.props;
 ---
 
 <div class="grid grid-cols-9 gap-4 mb-4">
@@ -9,7 +9,14 @@ const { number, title, tags, url, orientation } = Astro.props;
     </div>
 
     <h4 class="text-2xl md:text-3xl">
-      <a href={url} target="_blank">
+      <a
+        href={url}
+        target="_blank"
+        data-tippy-content={comment}
+        data-tippy-placement="top"
+        data-tippy-offset="[0, 40]"
+        data-tippy-followCursor="horizontal"
+      >
         { title }
       </a>
     </h4>

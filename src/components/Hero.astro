@@ -93,13 +93,13 @@
   function observerCallback(entries) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        document.querySelector('#matt-stenback').classList.remove('!translate-x-0', '!opacity-100');
+        document.querySelector('#matt-stenback-vertical').classList.remove('!translate-x-0', '!opacity-100');
         const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
           el.classList.add( '!translate-y-0', '!opacity-100');
         });
       }
       else {
-        document.querySelector('#matt-stenback').classList.add('!translate-x-0', '!opacity-100');
+        document.querySelector('#matt-stenback-vertical').classList.add('!translate-x-0', '!opacity-100');
         const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
           el.classList.remove('!translate-y-0', '!opacity-100');
         });

@@ -6,7 +6,8 @@ module.exports = {
 			'cartridge': {
 				DEFAULT: '#f2f9ff',
 				400: '#f2f9ff',
-				500: '#ced7f2',
+				500: '#dfe8f8',
+				600: '#ced7f2',
 			},
 			'purple': '#9582d9',
 			'orange': '#f2884b',

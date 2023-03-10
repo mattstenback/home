@@ -4,7 +4,10 @@ const entries = await Astro.glob('../pages/journal/*.mdx');
 ---
 
 <div class="flex pt-32 md:justify-center max-sm:pl-1">
-  <h3 class="font-headline text-9xl text-purple text-vertical whitespace-nowrap z-10 pr-8">
+  <h3
+    data-tippy-content="No rhyme or reason to the writing here. But having a place to publish is an inventive to formulate more coherent thoughts. (One can hope. TBD)"
+    class="font-headline text-9xl text-purple text-vertical whitespace-nowrap z-10 pr-8"
+  >
     Journal
   </h3>
 </div>
