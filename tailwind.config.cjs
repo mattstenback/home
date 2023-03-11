@@ -17,7 +17,7 @@ module.exports = {
 			fontFamily: {
 				'serif': ['swear-text', 'serif'],
 				'display': ['irregardless-variable', 'sans-serif'],
-				'mono': ['Vulf Mono Light Italic', 'monospace'],
+				'mono': ['VulfMonoLightItalic', 'monospace'],
 			},
 			rotate: {
         '15': '15deg',

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Vulf Mono Light Italic';
+  font-family: 'VulfMonoLightItalic';
   src: url('/fonts/VulfMonoLightItalic.woff2') format('woff2'), url('/fonts/VulfMonoLightItalic.woff') format('woff');
   font-weight: normal;
   font-style: italic;
