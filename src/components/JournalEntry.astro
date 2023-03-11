@@ -10,7 +10,7 @@ const { orientation, title, tags, url } = Astro.props
       </a>
     </h4>
 
-    <div class={`flex gap-x-4 font-mono text-xs mt-4 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
+    <div class={`flex gap-x-4 font-mono italic text-xs mt-4 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
       { tags.map((tag) => {
        return <span>#{tag}</span>;
       }) }

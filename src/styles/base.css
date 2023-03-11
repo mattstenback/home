@@ -13,7 +13,7 @@ html {
 @layer base {
   @font-face {
     font-family: "VulfMonoLightItalic";
-    src: url("/fonts/VulfMonoLightItalic.woff2"), url("/fonts/VulfMonoLightItalic.woff");
+    src: url("/fonts/VulfMonoLightItalic.woff2") format("woff2"), url("/fonts/VulfMonoLightItalic.woff") format("woff");
     font-weight: normal;
     font-style: italic;
     font-display: auto;
@@ -119,7 +119,7 @@ html {
 /* Tippy.js */
 
 .tippy-box[data-theme~='matt'] {
-  @apply bg-cartridge-500 text-indigo font-mono p-1;
+  @apply bg-cartridge-500 text-indigo font-mono italic p-1;
 }
 .tippy-box[data-theme~='matt'][data-placement^='top'] > .tippy-arrow::before {
   @apply border-t-cartridge-500;

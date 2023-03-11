@@ -4,7 +4,7 @@ const { number, title, tags, url, comment, orientation } = Astro.props;
 
 <div class="grid grid-cols-9 gap-4 mb-4">
   <div class={`col-span-9 md:col-span-4 ${orientation === 'right' ? 'md:col-start-6' : 'md:text-right'} max-md:mb-4`}>
-    <div class={`flex gap-x-4 font-mono text-xs mb-1 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
+    <div class={`flex gap-x-4 font-mono italic text-xs mb-1 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
       No.{number}
     </div>
 
@@ -21,7 +21,7 @@ const { number, title, tags, url, comment, orientation } = Astro.props;
       </a>
     </h4>
 
-    <div class={`flex gap-x-4 font-mono text-xs mt-4 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
+    <div class={`flex gap-x-4 font-mono italic text-xs mt-4 ${orientation === 'left' ? 'md:justify-end' : ''}`}>
       { tags.map((tag) => {
        return <span>#{tag}</span>;
       }) }
