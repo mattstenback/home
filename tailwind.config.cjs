@@ -13,12 +13,12 @@ module.exports = {
 			'orange': '#f2884b',
 			'indigo': '#273858',
 		},
+		fontFamily: {
+			'serif': ['swear-text', 'serif'],
+			'display': ['irregardless-variable', 'sans-serif'],
+			'mono': ['VulfMonoLightItalic', 'monospace'],
+		},
 		extend: {
-			fontFamily: {
-				'serif': ['swear-text', 'serif'],
-				'display': ['irregardless-variable', 'sans-serif'],
-				'mono': ['VulfMonoLightItalic', 'monospace'],
-			},
 			rotate: {
         '15': '15deg',
       }
