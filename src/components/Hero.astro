@@ -1,6 +1,6 @@
 <div class="relative h-screen">
   <div class="h-screen text-center relative flex justify-center items-center max-sm:overflow-x-hidden">
-    <div class="max-sm:rotate-90 max-sm:-ml-10 max-sm:scale-90">
+    <div class="max-sm:rotate-90 max-sm:-ml-10 max-sm:scale-75">
       <h2 id="hero" class="hero font-headline text-hero text-purple font-display">
         <span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
         <br />
@@ -54,33 +54,55 @@
 </div>
 
 <script>
-  const root = document.documentElement;
-  let throttle = false;
-  const throttleInterval = 20; 
+  let hasTouchScreen = false;
+  if ("maxTouchPoints" in navigator) {
+    hasTouchScreen = navigator.maxTouchPoints > 0;
+  } else if ("msMaxTouchPoints" in navigator) {
+    hasTouchScreen = navigator.msMaxTouchPoints > 0;
+  } else {
+    const mQ = matchMedia?.("(pointer:coarse)");
+    if (mQ?.media === "(pointer:coarse)") {
+      hasTouchScreen = !!mQ.matches;
+    } else if ("orientation" in window) {
+      hasTouchScreen = true; // deprecated, but good fallback
+    } else {
+      // Only as a last resort, fall back to user agent sniffing
+      const UA = navigator.userAgent;
+      hasTouchScreen =
+        /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+        /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+    }
+  }
 
-  // Calculate the offset of the mouse position relative to the center of the screen and apply it to CSS variables to animate the hero text
-  root.addEventListener("mousemove", e => {
-    if (throttle) return;
+  if (!hasTouchScreen) {
+    const root = document.documentElement;
+    let throttle = false;
+    const throttleInterval = 20; 
 
-    throttle = true;
-    setTimeout(() => throttle = false, throttleInterval);
+    // Calculate the offset of the mouse position relative to the center of the screen and apply it to CSS variables to animate the hero text
+    root.addEventListener("mousemove", e => {
+      if (throttle) return;
 
-    const w = window.innerWidth;
-    const h = window.innerHeight; 
+      throttle = true;
+      setTimeout(() => throttle = false, throttleInterval);
 
-    // Determine the xy orientation relative to the center of the screen
-    let xSign = e.clientX > w/2 ? 1 : -1;
-    let ySign = e.clientY > h/2 ? 1 : -1;
+      const w = window.innerWidth;
+      const h = window.innerHeight; 
 
-    // Calculate the distance from the center of the screen as an integer
-    let xDist = Math.round(Math.abs(w/2 - e.clientX));
-    let yDist = Math.round(Math.abs(h/2 - e.clientY));
+      // Determine the xy orientation relative to the center of the screen
+      let xSign = e.clientX > w/2 ? 1 : -1;
+      let ySign = e.clientY > h/2 ? 1 : -1;
 
-    console.log('tracking');
+      // Calculate the distance from the center of the screen as an integer
+      let xDist = Math.round(Math.abs(w/2 - e.clientX));
+      let yDist = Math.round(Math.abs(h/2 - e.clientY));
 
-    root.style.setProperty('--offsetX', (xDist * xSign).toString());
-    root.style.setProperty('--offsetY', (yDist * ySign).toString());
-  });
+      console.log('tracking');
+
+      root.style.setProperty('--offsetX', (xDist * xSign).toString());
+      root.style.setProperty('--offsetY', (yDist * ySign).toString());
+    });
+  }
 </script>
 
 <script>

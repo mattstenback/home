@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Vulf Mono Light Italic';
-  src: url('/fonts/VulfMonoLightItalic.woff2') format('woff2');
+  src: url('/fonts/VulfMonoLightItalic.woff2') format('woff2'), url('/fonts/VulfMonoLightItalic.woff') format('woff');
   font-weight: normal;
   font-style: italic;
   font-display: block;
