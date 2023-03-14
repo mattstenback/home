@@ -28,10 +28,10 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 	<body class="bg-cartridge">
 		<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-600 h-screen mx-auto max-lg:hidden'></div>
 
-		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline">Matt Stenback</a>
+		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline max-md:hidden">Matt Stenback</a>
 
-		<div class="container mx-auto px-10 max-lg:pl-16">
-			<div class="relative bg-cartridge-400 z-10 pb-32">
+		<div class="container mx-auto px-10">
+			<div class="relative bg-cartridge-400 z-10 pb-32 max-md:pb-12">
 				<div class="pt-8 grid grid-cols-9 gap-4">
 					<div class="col-span-4">
 						<div class="md:flex md:justify-between">
@@ -46,7 +46,7 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 					</div>	
 				</div>	
 
-				<div class="mt-32 grid grid-cols-9 gap-4">
+				<div class="mt-32 grid grid-cols-9 gap-4 max-md:mt-16">
 					<div class="col-span-9 lg:col-span-4 lg:text-right">
 						<h1 class="font-headline text-8xl md:text-9xl text-purple pt-2">
 							{frontmatter.title}
@@ -74,9 +74,12 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 			</div>
 		</div>
 
-		<Footer />
+		<div class="max-md:-ml-7">
+			<Footer />
+		</div>
 
-		<!-- <script>
+		<script>
+			console.log("HEOWLOO");
 			const observerOptions = {
 				root: null,
 				rootMargin: '0px',
@@ -96,6 +99,6 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 
 			const observer = new IntersectionObserver(observerCallback, observerOptions);
 			observer.observe(document.querySelector('#matt-stenback'));
-		</script> -->
+		</script>
 	</body>
 </html>
