@@ -28,6 +28,10 @@ html {
 }
 
 @layer utilities {
+  .h-screen-dynamic {
+    height: 100dvh;
+  }
+
   .text-hero {
     font-size: 13rem;
   }
