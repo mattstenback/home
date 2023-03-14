@@ -16,7 +16,6 @@ import Cursor from '../components/Cursor.astro';
 		id="matt-stenback-vertical"
 		data-tippy-content=":)"
 		data-tippy-offset="[0, 24]"
-		data-tippy-placement="right"
 		class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0">
 		Matt Stenback
 	</p>
@@ -44,18 +43,32 @@ import Cursor from '../components/Cursor.astro';
 		import tippy, { followCursor } from "tippy.js";
 		import "tippy.js/dist/tippy.css";
 		import "tippy.js/animations/shift-away.css";
+		import { hasTouchScreen } from '../scripts/touch-screen.js';
 
-		tippy('[data-tippy-content]', {
-			arrow: true,
-			theme: "matt",
-			placement: "left",
-			appendTo: document.body,
-			followCursor: "vertical",
-			animation: "shift-away",
-			hideOnClick: false,
-			maxWidth: 260,
-			plugins: [followCursor],
-		});
+		if (!hasTouchScreen) {
+			tippy('[data-tippy-content]', {
+				arrow: true,
+				theme: "matt",
+				placement: "right",
+				appendTo: document.body,
+				followCursor: "vertical",
+				animation: "shift-away",
+				hideOnClick: false,
+				maxWidth: 260,
+				plugins: [followCursor],
+			});
+		}	else {
+			tippy('[data-tippy-content]', {
+				arrow: true,
+				theme: "matt",
+				placement: "right",
+				appendTo: document.body,
+				animation: "shift-away",
+				// hideOnClick: true,
+				trigger: 'click',
+				maxWidth: 220,
+			});
+		}
 	</script>
 
 </Layout>

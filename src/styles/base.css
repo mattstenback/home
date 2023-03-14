@@ -123,7 +123,7 @@ html {
 /* Tippy.js */
 
 .tippy-box[data-theme~='matt'] {
-  @apply bg-cartridge-500 text-indigo font-mono italic p-1;
+  @apply bg-cartridge-500 text-indigo font-mono italic p-1 max-sm:text-xs;
 }
 .tippy-box[data-theme~='matt'][data-placement^='top'] > .tippy-arrow::before {
   @apply border-t-cartridge-500;
