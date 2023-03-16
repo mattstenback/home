@@ -9,7 +9,7 @@ export interface Props {
 	title: string;
 }
 
-const { title, frontmatter } = Astro.props;
+const { frontmatter } = Astro.props;
 
 const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 ---
@@ -20,7 +20,7 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{title} | Matt Stenback</title>
+		<title>{frontmatter.title} | Matt Stenback</title>
 		<meta name="description" content={frontmatter.description}>
 		<link rel="stylesheet" href="https://use.typekit.net/ymm2cgu.css">
 	</head>
@@ -30,10 +30,10 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 
 		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline max-md:hidden">Matt Stenback</a>
 
-		<div class="container mx-auto px-10">
+		<div class="container mx-auto px-6 lg:px-10">
 			<div class="relative bg-cartridge-400 z-10 pb-32 max-md:pb-12">
 				<div class="pt-8 grid grid-cols-9 gap-4">
-					<div class="col-span-4">
+					<div class="col-span-9 lg:col-span-4">
 						<div class="md:flex md:justify-between">
 							<a href="/" id="matt-stenback" class="font-mono italic text-sm no-underline">
 								Matt Stenback

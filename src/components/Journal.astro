@@ -3,7 +3,7 @@ import JournalEntry from "./JournalEntry.astro";
 const entries = await Astro.glob('../pages/journal/*.mdx');
 ---
 
-<div class="flex pt-32 md:justify-center max-sm:pt-20 max-sm:pl-1">
+<div class="flex pt-32 md:justify-center max-md:pt-20 max-md:pl-1">
   <h3
     data-mobile-tippy="true"
     data-tippy-content="No rhyme or reason to the writing here. My hope is that having a place to publish will be an incentive to think about things more deeply. (We'll see. TBD)"
@@ -13,7 +13,7 @@ const entries = await Astro.glob('../pages/journal/*.mdx');
   </h3>
 </div>
 
-<div class="py-32 max-sm:py-20 max-sm:pl-7">
+<div class="py-32 max-md:py-20 max-md:pl-6">
   {entries.map((entry, index) => {
     const orientation = index % 2 === 0 ? 'right' : 'left';
 

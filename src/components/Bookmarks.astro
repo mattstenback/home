@@ -4,7 +4,7 @@ import bookmarks from "../../public/bookmarks.json";
 const latestBookmarks = bookmarks.sort((a, b) => b.number - a.number).slice(0, 10);
 ---
 
-<div class="flex pt-32 md:justify-center max-sm:pt-20 max-sm:pl-1">
+<div class="flex pt-32 md:justify-center max-md:pt-20 max-md:pl-1">
   <h3 
     data-mobile-tippy="true"
     data-tippy-content="Just a collection of interesting things I’ve found on my travels around the world wide web."
@@ -13,7 +13,7 @@ const latestBookmarks = bookmarks.sort((a, b) => b.number - a.number).slice(0, 1
   </h3>
 </div>
 
-<div class="py-32 max-sm:py-20 max-sm:pl-7">
+<div class="py-32 max-md:py-20 max-md:pl-6">
   {latestBookmarks.map((bookmark, index) => {
     const orientation = index % 2 === 0 ? 'right' : 'left';
 
