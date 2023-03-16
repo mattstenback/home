@@ -2,7 +2,7 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="container mx-auto px-10 pt-64 pb-8">
+<footer class="container mx-auto px-10 pt-64 pb-8 max-md:pt-8">
   <div class="md:flex md:justify-between max-md:pl-6">
     <p class="md:hidden mb-1">
       <a class="font-mono italic text-sm" href="mailto:hello@mattstenback.com">
@@ -28,7 +28,7 @@ const currentYear = new Date().getFullYear();
 
 <!-- Colophon -->
   
-<div id="colophon" class="py-32 bg-cartridge-600 hidden relative">
+<div id="colophon" class="py-32 bg-cartridge-600 hidden relative max-md:py-16">
   <div class="container mx-auto md:px-10 max-md:pl-16 max-md:pr-10">
     <div class="grid grid-cols-9 gap-4 mb-4">
       <div class= "col-span-9 md:col-span-5 md:col-start-3">
@@ -65,6 +65,6 @@ const currentYear = new Date().getFullYear();
 
   colophonToggle.addEventListener("click", () => {
     colophon.classList.toggle("hidden");
-    window.scrollTo(0, document.body.scrollHeight);
+    colophon.scrollIntoView();
   });
 </script>
