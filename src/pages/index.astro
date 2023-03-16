@@ -8,7 +8,7 @@ import Bookmarks from '../components/Bookmarks.astro';
 import Cursor from '../components/Cursor.astro';
 ---
 
-<Layout title="Matt Stenback - Designer and Developer">
+<Layout title="Matt Stenback - Creative Technologist">
 	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-600 h-screen mx-auto max-md:hidden'></div>
 	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge max-md:hidden'></div>
 
@@ -28,6 +28,7 @@ import Cursor from '../components/Cursor.astro';
 
 		<div class="flex pt-32 md:justify-center max-sm:pt-20 max-sm:pl-1">
 			<h3 
+        data-mobile-tippy="true"
 				data-tippy-content="Cya!"
 				class="font-headline text-9xl text-purple text-vertical whitespace-nowrap z-10 pr-8"
 			>
@@ -58,17 +59,15 @@ import Cursor from '../components/Cursor.astro';
 				plugins: [followCursor],
 			});
 		}	else {
-			tippy('[data-tippy-content]', {
+			tippy('[data-mobile-tippy]', {
 				arrow: true,
 				theme: "matt",
 				placement: "right",
 				appendTo: document.body,
 				animation: "shift-away",
-				// hideOnClick: true,
 				trigger: 'click',
-				maxWidth: 220,
+				// maxWidth: 220,
 			});
 		}
 	</script>
-
 </Layout>

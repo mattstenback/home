@@ -4,14 +4,14 @@
     "title": "OH no Type Co.",
     "url": "https://ohnotype.co/",
     "tags": ["Typography"],
-    "comment": "All of the fonts on my website are from Oh no, and I can't wait to use more of them in future projects. They're all so good."
+    "comment": "Oh no is my favourite type foundry by far. All of the fonts on this website are from Oh no, and I can’t wait to use more in future projects."
   },
   {
     "number": 2,
     "title": "MiiR Camp Cup",
     "url": "https://www.miir.com/products/camp-cup-vacuum-insulated-stainless-steel?variant=39490450784330",
     "tags": ["Gear"],
-    "comment": "Fantastic mug for WFH. Keeps coffee at a drinkable temp for hours, lid prevents spills, and it's dishwasher safe. I have two."
+    "comment": "Fantastic mug for WFH. Keeps coffee at a drinkable temp for hours, lid prevents spills, and it’s dishwasher safe. I have two."
   },
   {
     "number": 3,
@@ -25,20 +25,27 @@
     "title": "Font Review Journal",
     "url": "https://fontreviewjournal.com/",
     "tags": ["Typography"],
-    "comment": "A must read for font nerds. Bethany Heck's enthusiasm for typography and design never fails to get me excited to think critically and make things."
+    "comment": "A must read for font nerds. Bethany Heck’s enthusiasm for typography and design never fails to get me excited to think critically and make things."
   },
   {
     "number": 5,
     "title": "The Manual",
     "url": "https://alwaysreadthemanual.com/index.html",
     "tags": ["Design"],
-    "comment": "A rich resource for designers. The project is on a hiatus for now, but they've made all their conent available for free online in the meantime."
+    "comment": "A rich resource for designers. The project is on a hiatus for now, but they’ve made all their conent available for free online in the meantime."
   },
   {
     "number": 6,
     "title": "Mini36 Keyboard",
     "url": "https://controller.works/products/mini36-low-profile-ergonomic-keyboard",
     "tags": ["Keyboards"],
-    "comment": "I have the black version of this keyboard and couldn't be happier. Definitely an endgame board for split ergo fans. You know who you are."
+    "comment": "I have the black version of this keyboard and couldn’t be happier. Definitely an endgame board for split ergo fans. You know who you are."
+  },
+  {
+    "number": 7,
+    "title": "Modern Font Stacks",
+    "url": "https://modernfontstacks.com/",
+    "tags": ["Typography"],
+    "comment": "For the projects where you’re willing to compromise on font choice to improve speed, this is super helpful."
   }
 ]

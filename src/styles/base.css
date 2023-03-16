@@ -100,23 +100,14 @@ html {
         rotateY(calc((var(--offsetX)) * 0.02 *  1deg));
   }
 
-  /* Gradient line animation  */
-  @keyframes gradient-fade {
-    0% {
-      background-position: 50% 0%;
-    }
-    50% {
-      background-position: 50% 100%;
-    }
-    100% {
-      background-position: 50% 0%;
-    }
+  .touch-screen-only {
+    @apply invisible;
   }
 
-  .gradient-fade {
-    background: linear-gradient(180deg, theme('colors.purple'), theme('colors.cartridge.500'));
-    animation: gradient-fade 2s ease infinite;
-    background-size: 300% 300%;
+  @media screen and (hover: none) {
+    .touch-screen-only {
+      @apply !visible;
+    }
   }
 }
 
