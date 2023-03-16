@@ -19,7 +19,7 @@ const { number, title, tags, url, comment, orientation } = Astro.props;
         class="inline"
       >{ title }</a>
       <span
-        class="touch-screen-only ml-2"
+        class="hidden touch-screen-only ml-2 max-sm:inline"
         data-mobile-tippy="true"
         data-tippy-content={comment}
         data-tippy-placement="top"
