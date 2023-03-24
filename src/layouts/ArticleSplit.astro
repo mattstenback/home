@@ -1,7 +1,9 @@
 ---
 import '../styles/base.css';
 import Footer from '../components/Footer.astro';
-import Cursor from '../components/Cursor.astro';
+import Paragraph from '../components/md/Paragraph.astro';
+import Subheading from '../components/md/Subheading.astro';
+export const components = {p: Paragraph, h2: Subheading};
 
 export interface Props {
 	title: string;
@@ -24,54 +26,60 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 	</head>
 
 	<body class="bg-cartridge">
+		<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-600 h-screen mx-auto max-lg:hidden'></div>
+
 		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline max-md:hidden">Matt Stenback</a>
 
 		<div class="container mx-auto px-6 lg:px-10">
-			<div class="pt-8 flex justify-between">
-				<a href="/" id="matt-stenback" class="font-mono italic text-sm no-underline max-sm:text-xs">
-					Matt Stenback
-				</a>
+			<div class="relative bg-cartridge-400 z-10 pb-32 max-md:pb-12">
+				<div class="pt-8 grid grid-cols-9 gap-4">
+					<div class="col-span-9 lg:col-span-4">
+						<div class="md:flex md:justify-between">
+							<a href="/" id="matt-stenback" class="font-mono italic text-sm no-underline">
+								Matt Stenback
+							</a>
 
-				<p class="font-mono italic text-sm max-sm:text-xs">
-					{publishedDate}
-				</p>
-			</div>	
+							<p class="font-mono italic text-sm max-lg:hidden">
+								{publishedDate}
+							</p>
+						</div>
+					</div>	
+				</div>	
 
-			<div class="mt-32 mx-auto max-w-screen-lg max-md:mt-16">
-				<div class="grid gap-x-4 justify-items-center font-mono italic text-sm invisible max-sm:text-xs md:mb-16 md:visible">
-					{ frontmatter.tags.map((tag) => {
-						return <div class="rounded-full bg-cartridge-500 bg-opacity-60 px-3 py-px leading-7">#{tag}</div>;
-					}) }
-				</div>
-
-				<h1 class="font-headline text-8xl text-purple md:text-center md:text-9xl">
-					{frontmatter.title}
-				</h1>
-
-				<div class="inline-grid gap-x-4 font-mono italic mt-8 text-xs md:hidden">
-					{ frontmatter.tags.map((tag) => {
-						return <div class="rounded-full bg-cartridge-500 px-2 py-px leading-6">#{tag}</div>;
-					}) }
-				</div>
-				
-				{ frontmatter.image && 
-					<div class="mt-16">
-						<img src={frontmatter.image.url} alt={frontmatter.image.title} title={frontmatter.image.title} />
+				<div class="mt-32 grid grid-cols-9 gap-4 max-md:mt-16">
+					<div class="col-span-9 lg:col-span-4 lg:text-right">
+						<h1 class="font-headline text-8xl md:text-9xl text-purple pt-2">
+							{frontmatter.title}
+						</h1>
 					</div>
-				}
-		</div>
+				</div>
+			</div>
 
-		<div class="container mb-32 mt-8 mx-auto px-6 max-w-screen-sm text-lg md:mt-16 lg:text-xl">
-			<slot />
+			<div class="mb-32 grid grid-cols-9 gap-4">
+				<div class="col-span-9 lg:col-span-4 lg:text-right">
+					<p class="font-mono italic text-sm mb-2 lg:hidden">
+						{publishedDate}
+					</p>
+
+					<div class="flex gap-x-4 font-mono italic text-sm lg:justify-end">
+						{ frontmatter.tags.map((tag) => {
+						return <span>#{tag}</span>;
+						}) }
+					</div>
+				</div>
+
+				<div class="text-lg col-span-9 max-lg:mt-8 lg:col-span-4 lg:col-start-6 lg:text-xl">
+					<slot />
+				</div>
+			</div>
 		</div>
 
 		<div class="max-md:-ml-6">
 			<Footer />
 		</div>
 
-		<Cursor />
-
 		<script is:inline>
+			console.log("HEOWLOO");
 			const observerOptions = {
 				root: null,
 				rootMargin: '0px',

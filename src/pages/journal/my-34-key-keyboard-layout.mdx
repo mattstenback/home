@@ -1,0 +1,61 @@
+---
+title: "My 34-key Keyboard Layout"
+published: 2023-03-23
+description: "My 34-key keyboard layout is a compact, ergonomic, and efficient layout for programming and text editing."
+image:
+  url: "/images/keyboard.svg"
+  title: "Split 34-key layout"
+tags: ["Keyboards"]
+
+layout: '../../layouts/Article.astro'
+---
+
+import Paragraph from '../../components/md/Paragraph.astro';
+import Subheading from '../../components/md/Subheading.astro';
+import SectionHeading from '../../components/md/SectionHeading.astro';
+import UnorderedList from '../../components/md/UnorderedList.astro';
+export const components = {p: Paragraph, h2: Subheading, h3: SectionHeading, ul: UnorderedList};
+
+## I use a split, low-profile keyboard with a column staggered 34-key layout.
+
+<span class="smallcaps">The story of how</span> I fell down the keyboard rabbit hole is one for another day, but the core driving force behind it is that it's the main interface for work and play, and the traditional keyboard seems so poorly designed. From the physical arrangement of keys, to the mapping or layout of the keys, to the orientation of the keys and how misaligned they are to the human anatomy. Closely examined, there's hardly any element of the traditional keyboard that's optimized for the user. I got a little obsessed with this problem, as I do, and that has turned into a nice hobby over time.
+
+Some folks arrive at this sort of keyboard for purely for ergonomic reasons, or because they are collectors. For me, it's about design. From first principles, what would a modern typing interface look like? I'd like to walk through more of this thought exercise and justify my views in another post, but here's a summary of my current stance:
+
+- I think a split layout makes more sense than a unified layout. 
+- Column stagger makes more sense than row stagger or ortholinear.
+- Thumbs should get more involved. 
+- The number of physical keys to include is a balance of ergonomic and input speed considerations. Currently I think 34-36 keys is the sweet spot. 
+- I like the idea of tenting or adding curvature to the frame of the keyboard, but that seems to come with a harsh trade for aesthetics and/or portability at the moment.
+
+### The layout
+
+Here's the base layout of the keyboard. I still use QWERTY mainly due to inertia, but plan to experiment with COLEMAK-DH. I found my left thumb to be the dominant one for hitting the space bar so I gave it that job exclusively. The rest of the thumb keys are layers (Shift is the OG layer).
+
+![Keyboard Base Layer](/images/keyboard-base.webp)
+
+Ok, so where are all the other keys? Mostly in layers, but some are also mapped to key-combos.
+
+### Layers
+
+In addition to the base layer, my keyboard layout has 3 other layers. To access layers, you hold one or both of your thumbs down on the layer keys.
+
+![Keyboard Symbol Layer](/images/keyboard-symbols.webp)
+
+![Keyboard Navigation Layer](/images/keyboard-nav.webp)
+
+![Keyboard Number Layer](/images/keyboard-numbers.webp)
+
+### One-shot home row modifiers
+
+You'll also notice in the symbol and navigation layers that the standard modifier keys are activated on the home row of the same side/hand that has activated the layer. These are setup to be one-shot mods, meaning that you can press any combination of the modifiers, let go (or not), and then the next key you press will have the modifiers applied to them. This is how something like Cmd+C is possible even though those two keys are on different layers.
+
+![Keyboard Mods](/images/keyboard-mods.webp)
+
+### Combos
+
+For some of the more common keys I use that aren't on the base layer, I opted to use base layer combos rather than mapping them as their own keys on deeper layers. Combos are faster and lend more fluidity to the typing experience than layers do, which require chording and always seem to make me pause to think for a brief moment. Things like enter, backspace, escape and tab are combos. Also symbols and commands I commonly use in Vim like `/`, `:`, `:w`, `:wq`, and `:vsp` are all available as combos on the base layer.
+
+
+![Keyboard Combos](/images/keyboard-combos.webp)
+![Keyboard Vim Combos](/images/keyboard-combos-vim.webp)
