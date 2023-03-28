@@ -23,7 +23,7 @@ html {
 
 @layer components {
   a {
-    @apply text-indigo underline underline-offset-4 decoration-orange hover:text-orange transition-colors duration-100 ease-linear;
+    @apply text-indigo underline underline-offset-4 decoration-1 decoration-orange hover:text-orange transition-colors duration-100 ease-linear;
   }
 }
 
