@@ -1,6 +1,6 @@
 ---
 title: "My 34-key Keyboard Layout"
-published: 2023-03-23
+published: "March 27, 2023"
 description: "My 34-key keyboard layout is a compact, ergonomic, and efficient layout for programming and text editing."
 image:
   url: "/images/keyboard.svg"
@@ -18,27 +18,36 @@ export const components = {p: Paragraph, h2: Subheading, h3: SectionHeading, ul:
 
 ## I use a split, low-profile keyboard with a column staggered 34-key layout.
 
-<span class="smallcaps">The story of how</span> I fell down the keyboard rabbit hole is one for another day, but the core driving force behind it is that it's the main interface for work and play, and the traditional keyboard seems so poorly designed. From the physical arrangement of keys, to the mapping or layout of the keys, to the orientation of the keys and how misaligned they are to the human anatomy. Closely examined, there's hardly any element of the traditional keyboard that's optimized for the user. I got a little obsessed with this problem, as I do, and that has turned into a nice hobby over time.
+<span class="smallcaps">A couple of years ago</span> I fell down the enthusiast keyboard rabbit hole chasing a design problem. The short version of the story is that learning Vim made me see keyboards in an entirely different way. One thing lead to another, I got a little obsessed, and now my keyboard only has 34 keys.
 
-Some folks arrive at this sort of keyboard for purely for ergonomic reasons, or because they are collectors. For me, it's about design. From first principles, what would a modern typing interface look like? I'd like to walk through more of this thought exercise and justify my views in another post, but here's a summary of my current stance:
+Ok, so what’s the problem?
 
-- I think a split layout makes more sense than a unified layout. 
-- Column stagger makes more sense than row stagger or ortholinear.
-- Thumbs should get more involved. 
-- The number of physical keys to include is a balance of ergonomic and input speed considerations. Currently I think 34-36 keys is the sweet spot. 
-- I like the idea of tenting or adding curvature to the frame of the keyboard, but that seems to come with a harsh trade for aesthetics and/or portability at the moment.
+Simply put, keyboards have one job: enable humans to use their hands to generate text. If you look at a standard keyboard and then at your hands, [it’s difficult to make a case that they’re optimally aligned](https://youtu.be/Ho_CFfdsmc8). That said, there are still numerous well-intentioned design decisions to be found, and humans can clearly type incredibly fast with a standard keyboard. But the whole thing feels similar to database driven UI design. It asks humans to adapt to the interface rather than the other way around.
+
+What if we started over? From first principles, what might a modern keyboard look like?
+
+A more detailed walk through of that thought exercise might be interesting in the future, but here’s a summary of my current thoughts (as someone with good control of both hands, and no RSI pain to deal with):
+
+- A split layout makes more sense than a fixed, unified layout. Spreading your hands apart enables more comfortable typing positions. Unhunch those shoulders. 
+- Column stagger makes more sense than row stagger or ortholinear. Hold your hand up to the keyboard image above, notice how the tops of the keys follow with the natural shape of your finger tips?
+- Thumbs should get more involved. They’re strong.  
+- The number of physical keys to include is mainly a balance of ergonomic and input speed considerations. Currently I think 34-36 keys is the sweet spot.
+- From an ergonomic perspective I like the idea of tenting or adding curvature to the frame of the keyboard, but it seems to often require a harsh trade for aesthetics and/or [portability](https://kinesis-ergo.com/shop/advantage2/) at the moment. (Though I wouldn’t be upset about having [something like this](https://kbd.news/Dactyl-Manuform-Tight-finishing-975.html) on my desk)
+- [QWERTY isn’t great](https://www.keybr.com/layouts), but with the rest of the UX gains above in place, it's not as big of a problem. 
 
 ### The layout
 
-Here's the base layout of the keyboard. I still use QWERTY mainly due to inertia, but plan to experiment with COLEMAK-DH. I found my left thumb to be the dominant one for hitting the space bar so I gave it that job exclusively. The rest of the thumb keys are layers (Shift is the OG layer).
+Here’s the base layout of the keyboard. I still use QWERTY mainly due to inertia, but I plan to give COLEMAK-DH an honest try soon. That said, I made a couple of minor tweaks to the standard QWERTY layout like moving P to the home row as well as being deliberate about which symbols make it on the base layer (I use snakecase in code all the time so having underscore on the base layer was worth it for me). I found my left thumb to be the dominant one for hitting the space bar so I gave it that job exclusively. 
+
+The rest of the keys can be accessed through layers and combos.
 
 ![Keyboard Base Layer](/images/keyboard-base.webp)
 
-Ok, so where are all the other keys? Mostly in layers, but some are also mapped to key-combos.
-
 ### Layers
 
-In addition to the base layer, my keyboard layout has 3 other layers. To access layers, you hold one or both of your thumbs down on the layer keys.
+In addition to the base layer, the layout has three other layers to access Symbols, Numbers and Navigation (admittedly "navigation" is a bit of a naming stretch given the diversity of the keys on that layer, but hey, good enough is better than perfect).
+
+There are several ways to activate layers with modern keyboard firmware like QMK. I prefer holding the layer key down like you do with Shift, the OG layer. So in this layout, your thumbs are on layer duty. You hold one or both of them to activate the various layers.  
 
 ![Keyboard Symbol Layer](/images/keyboard-symbols.webp)
 
@@ -48,14 +57,26 @@ In addition to the base layer, my keyboard layout has 3 other layers. To access 
 
 ### One-shot home row modifiers
 
-You'll also notice in the symbol and navigation layers that the standard modifier keys are activated on the home row of the same side/hand that has activated the layer. These are setup to be one-shot mods, meaning that you can press any combination of the modifiers, let go (or not), and then the next key you press will have the modifiers applied to them. This is how something like Cmd+C is possible even though those two keys are on different layers.
+You’ll also notice in the Symbol and Navigation layers that the standard modifier keys are positioned on the home row of the same side/hand that activated the layer. Holding your left thumb gives you mods on the left. Right thumb, right hand mods.
+
+These are configured to be "one-shot" mods, meaning that you can press any combination of the modifiers, let go of the keys (or not), and then the next key you press will have the modifiers applied to them. This is how something like `Cmd`+`C` is possible even though `Cmd` and `C` are on different layers; You activate Cmd and then let go bringing you back to the base layer where you press `C`.
 
 ![Keyboard Mods](/images/keyboard-mods.webp)
 
 ### Combos
 
-For some of the more common keys I use that aren't on the base layer, I opted to use base layer combos rather than mapping them as their own keys on deeper layers. Combos are faster and lend more fluidity to the typing experience than layers do, which require chording and always seem to make me pause to think for a brief moment. Things like enter, backspace, escape and tab are combos. Also symbols and commands I commonly use in Vim like `/`, `:`, `:w`, `:wq`, and `:vsp` are all available as combos on the base layer.
+For some of the more common keys I use that aren’t on the base layer, I opted to use base layer combos rather than mapping them as their own keys on deeper layers. Combos are faster and produce a more fluid typing experience than layers do, which require chording and often make me pause to think for a brief moment rather than just type. Things like enter, backspace, escape and tab are combos. Symbols and commands I commonly use in Vim like `/`, `:`, `:w`, `:wq`, and `:vsp` are also available as combos on the base layer.
 
 
 ![Keyboard Combos](/images/keyboard-combos.webp)
 ![Keyboard Vim Combos](/images/keyboard-combos-vim.webp)
+
+That’s it. The layout is still a work in progress, but I would consider it a stable 1.0 at the moment. It’s based on some thoughtful consideration of ergonomics and efficiency that I feel are lacking in standard keyboard layouts. And if nothing else, I always find satisfaction from sharpening my tools.
+
+If you’re interested in testing out the layout or using it as a base for your own, you can find it on my [Github](https://github.com/mattstenback/qmk_firmware/tree/5fb7c234f4319aeab10434ea349a5a8933b80cfe/keyboards/controllerworks/mini36/keymaps/mattstenback).
+
+<div class="h-px w-full bg-cartridge-500 my-8"></div>
+
+PS. I [found](https://github.com/callum-oakley/qmk_firmware/tree/master/users/callum) [these](https://www.youtube.com/@BenVallack) [folks](https://www.jonashietala.se/blog/2021/06/03/the-t-34-keyboard-layout/) [to](https://github.com/manna-harbour/miryoku/tree/master/docs/reference) [be](https://precondition.github.io/home-row-mods) a great source of information and inspiration along the way. 
+
+PPS. My current daily driver keyboard is the [Mini36](https://controller.works/en-ca/products/mini36-low-profile-ergonomic-keyboard) (Yes that’s two more than 34. Ignore those…), but I’ve also been a happy user of the [Ferris](https://github.com/pierrechevalier83/ferris) for a long time.

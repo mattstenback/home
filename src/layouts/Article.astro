@@ -26,7 +26,7 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 	<body class="bg-cartridge">
 		<a href="/" id="matt-stenback-vertical" class="fixed top-8 left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0 no-underline max-md:hidden">Matt Stenback</a>
 
-		<div class="container mx-auto px-6 lg:px-10">
+		<div class="container mx-auto px-6 mb-16 lg:px-10">
 			<div class="pt-8 flex justify-between">
 				<a href="/" id="matt-stenback" class="font-mono italic text-sm no-underline max-sm:text-xs">
 					Matt Stenback
@@ -59,6 +59,7 @@ const publishedDate = new Date(frontmatter.published).toLocaleDateString('en-US'
 						<img src={frontmatter.image.url} alt={frontmatter.image.title} title={frontmatter.image.title} />
 					</div>
 				}
+			</div>	
 		</div>
 
 		<div class="container mb-32 mt-8 mx-auto px-6 max-w-screen-sm text-lg md:mt-16 lg:text-xl">
