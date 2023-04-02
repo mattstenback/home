@@ -85,6 +85,10 @@ html {
     transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
   }
 
+  .image-zoom-open {
+    @apply fixed inset-0 flex items-center justify-center bg-indigo bg-opacity-50 z-50 !m-0 px-8;
+  }
+
   :root {
     --offsetX: 0;
     --offsetY: 0;

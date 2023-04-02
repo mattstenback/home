@@ -1,0 +1,21 @@
+---
+const { url, title, enable = true } = Astro.props;
+---
+
+{ enable ? 
+  <div class="image-zoom-bg">
+    <img src={url} alt={title} title={title} class="image-zoom-toggle" />
+  </div>
+:
+  <img src={url} alt={title} title={title} />
+}
+
+{ enable && 
+  <script>
+    const image = document.querySelector(".image-zoom-toggle");
+
+    image.addEventListener("click", () =>{
+      image.parentNode.classList.toggle("image-zoom-open");
+    })
+  </script>
+}
