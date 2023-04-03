@@ -1,6 +1,7 @@
 ---
 import JournalEntry from "./JournalEntry.astro";
-const entries = await Astro.glob('../pages/journal/*.mdx');
+const allEntries = await Astro.glob('../pages/journal/*.mdx');
+const entries = allEntries.filter((entry) => !entry.frontmatter?.draft);
 ---
 
 <div class="flex pt-32 md:justify-center max-md:pt-20 max-md:pl-1">
