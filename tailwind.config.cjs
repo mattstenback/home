@@ -4,15 +4,16 @@ module.exports = {
 	theme: {
 		colors: {
 			'cartridge': {
-				DEFAULT: '#f0f4ff',
-				400: '#f0f4ff',
-				500: '#dce4f7',
-				600: '#c4d0ef',
+				DEFAULT: '#FAFAF9',
+				400: '#FAFAF9',
+				500: '#EDECE8',
+				600: '#DDDBD5',
 			},
 			'purple': '#9582d9',
-			'orange': '#1755F4',
+			'orange': '#E55504',
 			'amber': '#F5762A',
-			'indigo': '#0a1f4e',
+			'braun-green': '#4E7942',
+			'indigo': '#1E1B16',
 		},
 		fontFamily: {
 			'serif': ['swear-text', 'serif'],
