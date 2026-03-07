@@ -1,43 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
-import Journal from '../components/Journal.astro';
-import Footer from '../components/Footer.astro';
-import Bookmarks from '../components/Bookmarks.astro';
 import Cursor from '../components/Cursor.astro';
 ---
 
-<Layout title="Matt Stenback - Creative Technologist">
-	<div class='z-0 fixed top-0 inset-x-0 w-px bg-cartridge-600 h-screen mx-auto max-md:hidden'></div>
-	<div class='absolute top-0 inset-x-0 bottom-40 bg-cartridge max-md:hidden'></div>
-
-	<p
-		id="matt-stenback-vertical"
-		data-tippy-content=":)"
-		data-tippy-offset="[0, 24]"
-		class="fixed top-8 left-3 md:left-6 font-mono italic text-sm text-purple text-vertical whitespace-nowrap transition-all duration-1000 -translate-x-10 opacity-0">
-		Matt Stenback
-	</p>
-
-	<main class="container mx-auto px-6 md:px-10">
+<Layout title="Matt Stenback - Product Maker">
+	<main>
 		<Hero />
-		<About />
-		<Journal />
-		<Bookmarks />
-
-		<div class="flex py-32 md:justify-center max-md:py-20 max-md:pl-1">
-			<h3 
-        data-mobile-tippy="true"
-				data-tippy-content="Cya!"
-				class="font-headline text-9xl text-purple text-vertical whitespace-nowrap z-10 pr-8"
-			>
-				Thanks for stopping by
-			</h3>
-		</div>
 	</main>
 
-	<Footer />
 	<Cursor />
 
 	<script>

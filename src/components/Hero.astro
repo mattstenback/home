@@ -1,14 +1,12 @@
-<div class="relative h-screen max-sm:hidden">
-  <div class="h-screen text-center relative flex justify-center items-center max-sm:overflow-x-hidden">
-    <div class="max-sm:rotate-90 max-sm:-ml-10 max-sm:scale-50">
-      <h2 id="hero" class="hero font-headline text-hero text-purple font-display">
-        <span class="ir-wide-rounds">C</span>reat<span class="lowercase">i</span>ve 
-        <br />
-        Technolog<span class="lowercase">i</span>st
+<div class="relative h-screen">
+  <div class="h-screen text-center relative flex justify-center items-center overflow-x-hidden">
+    <div class="-translate-y-[80px]">
+      <h2 id="hero" class="hero font-headline text-hero text-orange font-display opacity-10 whitespace-nowrap">
+        <span class="ir-wide-rounds">P</span>roduct & Design
       </h2>
 
-      <div class="absolute inset-0 flex items-center justify-center -mt-32">
-        <h1 class="text-9xl text-indigo font-mono italic leading-none -rotate-15">
+      <div class="absolute inset-0 flex items-center justify-center -mt-24">
+        <h1 class="text-[11vw] text-orange font-mono italic leading-none -rotate-15">
           <div class="flex flex-col items-center justify-center">
             <div class="flex">
               <span class="hvr-bounce-in">M</span>
@@ -32,21 +30,27 @@
     </div>
   </div>
 
-  <p class="max-sm:text-xs hero-meta absolute top-8 left-0 font-mono italic text-sm transition-all opacity-0 translate-y-10 duration-1000">
+  <img
+    src="/images/me.png"
+    alt="Matt Stenback"
+    class="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] object-contain object-bottom pointer-events-none mix-blend-multiply"
+  />
+
+  <p class="max-sm:text-xs absolute top-8 left-6 md:left-10 font-mono italic text-sm">
     Matt Stenback
   </p>
 
-  <p class="max-sm:text-xs hero-meta absolute top-8 right-0 font-mono italic text-sm transition-all opacity-0 translate-y-10 duration-1000">
-    St. John’s, NL
+  <p class="max-sm:text-xs absolute top-8 right-6 md:right-10 font-mono italic text-sm text-right">
+    Currently at <a href="https://spellbook.legal" target="_blank">Spellbook</a>
   </p>
 
-  <p class="max-sm:text-xs hero-meta absolute bottom-8 left-0 font-mono italic text-sm transition-all opacity-0 -translate-y-10 duration-1000">
+  <p class="max-sm:text-xs absolute bottom-8 left-6 md:left-10 font-mono italic text-sm">
     <a href="mailto:hello@mattstenback.com">
       Email
     </a>
   </p>
 
-  <p class="max-sm:text-xs hero-meta absolute bottom-8 right-0 font-mono italic text-sm transition-all opacity-0 -translate-y-10 duration-1000">
+  <p class="max-sm:text-xs absolute bottom-8 right-6 md:right-10 font-mono italic text-sm">
     <a href="https://www.instagram.com/stenback" target="_blank">
       Instagram
     </a>
@@ -85,30 +89,3 @@
   }
 </script>
 
-<script>
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 1,
-  };
-
-  function observerCallback(entries) {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        document.querySelector('#matt-stenback-vertical').classList.remove('!translate-x-0', '!opacity-100');
-        const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
-          el.classList.add( '!translate-y-0', '!opacity-100');
-        });
-      }
-      else {
-        document.querySelector('#matt-stenback-vertical').classList.add('!translate-x-0', '!opacity-100');
-        const matches = document.querySelectorAll(".hero-meta").forEach((el) => {
-          el.classList.remove('!translate-y-0', '!opacity-100');
-        });
-      }
-    });
-  }
-
-  const observer = new IntersectionObserver(observerCallback, observerOptions);
-  observer.observe(document.querySelector('#hero'));
-</script>
