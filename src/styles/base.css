@@ -33,7 +33,13 @@ html {
   }
 
   .text-hero {
-    font-size: clamp(7rem, 18vw, 24rem);
+    font-size: clamp(4.5rem, 27vw, 36rem);
+  }
+
+  @media (min-width: 640px) {
+    .text-hero {
+      font-size: clamp(4.05rem, 24.3vw, 32.4rem);
+    }
   }
   
   .font-headline {
