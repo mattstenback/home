@@ -56,7 +56,7 @@
   }
 
   .cursor-dot {
-    @apply bg-braun-green;
+    @apply bg-green;
     position: absolute;
     box-sizing: border-box;
     align-items: center;
@@ -97,7 +97,7 @@
   .cursor.cursor--link-focused .cursor-border {
     width: 90px;
     height: 90px;
-    @apply border-braun-green;
+    @apply border-green;
   }
 
   .cursor.cursor--link-focused .cursor-dot {
@@ -107,12 +107,16 @@
  .cursor.cursor--subtle-focused .cursor-border {
     width: 30px;
     height: 30px;
-    @apply bg-braun-green bg-opacity-25 border-none;
+    @apply bg-green bg-opacity-25 border-none;
   }
 
   .cursor.cursor--subtle-focused .cursor-dot {
     width: 30px;
     height: 30px;
-    @apply bg-braun-green bg-opacity-0;
+    @apply bg-green bg-opacity-0;
+  }
+
+  .cursor.cursor--hidden {
+    opacity: 0;
   }
 </style>

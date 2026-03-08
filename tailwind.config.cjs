@@ -1,23 +1,31 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	darkMode: 'class',
 	theme: {
 		colors: {
+			'paper': '#f7f7f7',
 			'cartridge': {
-				DEFAULT: '#FAFAF9',
-				400: '#FAFAF9',
-				500: '#EDECE8',
-				600: '#DDDBD5',
+				DEFAULT: '#F2EAE0',
+				400: '#F2EAE0',
+				500: '#E8DDD2',
+				600: '#D8CFC5',
 			},
+			'clay': '#8C8278',
 			'purple': '#9582d9',
-			'orange': '#E55504',
+			'orange': '#ff6600',
 			'amber': '#F5762A',
 			'braun-green': '#4E7942',
-			'indigo': '#1E1B16',
+			'indigo': '#000f1d',
+			'white': '#FFFFFF',
+			'blue': '#4da2ff',
+			'turquoise': '#5dceff',
+			'green': '#21935b',
 		},
 		fontFamily: {
 			'serif': ['swear-text', 'serif'],
-			'display': ['irregardless-variable', 'sans-serif'],
+			'display': ['DegularDisplay', 'irregardless-variable', 'sans-serif'],
+			'sans': ['DegularText', 'sans-serif'],
 			'mono': ['VulfMonoLightItalic', 'monospace'],
 		},
 		extend: {

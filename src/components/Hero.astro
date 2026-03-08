@@ -1,91 +1,400 @@
-<div class="relative h-[100dvh]">
-  <div class="h-[100dvh] text-center relative flex justify-center items-center overflow-x-hidden">
-    <div class="-translate-y-[100px] sm:-translate-y-[140px]">
-      <h2 id="hero" class="hero font-headline text-hero text-indigo font-display opacity-10 sm:whitespace-nowrap">
-        <span class="ir-wide-rounds">P</span>roduct<br class="sm:hidden" /> & Design
-      </h2>
+<div class="relative h-[100dvh] flex flex-col px-6 md:px-10">
 
-      <div class="absolute inset-0 flex items-center justify-center -mt-16 sm:-mt-32">
-        <h1 class="text-[12.1vw] text-amber font-mono italic leading-none -rotate-15">
-          <div class="flex flex-col items-center justify-center">
-            <div class="flex">
-              <span class="hvr-bounce-in">M</span>
-              <span class="hvr-bounce-in">a</span>
-              <span class="hvr-bounce-in">t</span>
-              <span class="hvr-bounce-in">t</span>
-            </div>
-            <div class="flex">
-              <span class="hvr-bounce-in">S</span>
-              <span class="hvr-bounce-in">t</span>
-              <span class="hvr-bounce-in">e</span>
-              <span class="hvr-bounce-in">n</span>
-              <span class="hvr-bounce-in">b</span>
-              <span class="hvr-bounce-in">a</span>
-              <span class="hvr-bounce-in">c</span>
-              <span class="hvr-bounce-in">k</span>
-            </div>
-          </div>
-        </h1>
+  <!-- Bottom: hero content -->
+  <div class="my-auto pb-8 md:pb-12">
+
+    <!-- Face with speech balloon — sits just above the heading -->
+    <div class="relative inline-block mb-[26px]" style="margin-left: -6px;">
+      <div class="face-wrap w-[10vw] h-[12vw] overflow-hidden cursor-default relative">
+        <!-- Shelf line -->
+        <div class="absolute bottom-0 inset-x-[5%] h-[1px] z-10 shelf-line"></div>
+        <img
+          src="/images/me.png"
+          alt="Matt Stenback"
+          class="peek-img w-full h-full object-cover object-top mix-blend-multiply dark:mix-blend-normal"
+        />
       </div>
+      <div class="speech-balloon">Good morning!</div>
     </div>
+
+    <h1 class="font-display text-indigo dark:text-paper leading-none mb-6"
+      style="font-size: clamp(2.5rem, 6vw, 5rem);">
+      Hey, I'm Matt.<br>I make products.
+    </h1>
+    <p class="font-sans text-[17px] md:text-[20px] text-indigo dark:text-paper leading-snug max-w-[50%] mb-4">
+      I'm a designer and developer with a particular interest in UX and the
+      practical application of AI. I get up in the morning for a big vision,
+      and I stay up late for the small details.
+    </p>
+    <p class="font-sans text-[17px] md:text-[20px] text-indigo dark:text-paper leading-snug">
+      Currently at <a href="https://spellbook.legal" target="_blank">Spellbook</a>
+    </p>
   </div>
 
-  <img
-    src="/images/me.png"
-    alt="Matt Stenback"
-    class="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] max-sm:h-[44vh] object-contain object-bottom pointer-events-none mix-blend-multiply"
-  />
+</div>
 
-  <p class="max-sm:text-xs absolute top-8 left-6 md:left-10 font-mono italic text-sm">
-    Matt Stenback
-  </p>
+<!-- Pull-chain dark mode toggle — fixed top-right -->
+<div id="chain-root" class="fixed right-10 z-50 flex flex-col items-center"
+  style="top: -10px; width: 20px; user-select: none; -webkit-user-select: none; cursor: none;">
 
-  <p class="max-sm:text-xs absolute top-8 right-6 md:right-10 font-mono italic text-sm text-right">
-    <span class="max-sm:hidden">Currently </span><span class="sm:hidden">A</span><span class="max-sm:hidden">a</span>t <a href="https://spellbook.legal" target="_blank">Spellbook</a>
-  </p>
+  <!-- Chain links (SVG — built by JS) -->
+  <svg id="chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
+    style="overflow: visible; display: block; flex-shrink: 0;">
+  </svg>
 
-  <p class="max-sm:text-xs absolute bottom-8 left-6 md:left-10 font-mono italic text-sm">
-    <a href="mailto:hello@mattstenback.com">
-      Email
-    </a>
-  </p>
 
-  <p class="max-sm:text-xs absolute bottom-8 right-6 md:right-10 font-mono italic text-sm">
-    <a href="https://www.instagram.com/stenback" target="_blank">
-      Instagram
-    </a>
-  </p>
 </div>
 
 <script>
-  import { hasTouchScreen } from '../scripts/touch-screen.js';
+  // ── Constants ──────────────────────────────────────────────────
+  const NUM_NODES = 14;
+  const LINK_LEN  = 8;
+  const NATURAL_H = (NUM_NODES - 1) * LINK_LEN; // 104px
+  const MAX_BEADS = 35;
+  const CX        = 10;
+  const GRAVITY   = 0.5;
+  const DAMPING   = 0.87;
+  const ITERS     = 8;
+  const TRIGGER   = 50;
+  const MAX_PULL  = NATURAL_H * 2;
+  const CURSOR_R  = 50;
+  const CURSOR_F  = 0.07;
+  const NS        = 'http://www.w3.org/2000/svg';
 
-  if (!hasTouchScreen) {
-    const root = document.documentElement;
-    let throttle = false;
-    const throttleInterval = 20; 
+  const svg    = document.getElementById('chain-svg');
 
-    // Calculate the offset of the mouse position relative to the center of the screen and apply it to CSS variables to animate the hero text
-    root.addEventListener("mousemove", e => {
-      if (throttle) return;
+  let nodes        = [];
+  let linkEls      = [];
+  let handleEl     = null;
+  let dragging     = false;
+  let dragTargetX  = CX;
+  let dragTargetY  = NATURAL_H;
+  let startDragX   = CX;
+  let startDragY   = NATURAL_H;
+  let startClientX = 0;
+  let startClientY = 0;
+  let pendingToggle = false;
+  let animId       = null;
+  let mouseX       = -9999;
+  let mouseY       = -9999;
+  let prevMouseX   = -9999;
+  let prevMouseY   = -9999;
 
-      throttle = true;
-      setTimeout(() => throttle = false, throttleInterval);
+  // ── Build SVG (defs + link elements) ──────────────────────────
+  (function buildSVG() {
+    const defs = document.createElementNS(NS, 'defs');
 
-      const w = window.innerWidth;
-      const h = window.innerHeight; 
-
-      // Determine the xy orientation relative to the center of the screen
-      let xSign = e.clientX > w/2 ? 1 : -1;
-      let ySign = e.clientY > h/2 ? 1 : -1;
-
-      // Calculate the distance from the center of the screen as an integer
-      let xDist = Math.round(Math.abs(w/2 - e.clientX));
-      let yDist = Math.round(Math.abs(h/2 - e.clientY));
-
-      root.style.setProperty('--offsetX', (xDist * xSign).toString());
-      root.style.setProperty('--offsetY', (yDist * ySign).toString());
+    // Pure silver radial gradient — neutral greys, high contrast
+    const grad = document.createElementNS(NS, 'radialGradient');
+    grad.id = 'chain-metal';
+    grad.setAttribute('cx', '28%'); grad.setAttribute('cy', '20%');
+    grad.setAttribute('r', '55%');
+    [['0%','#ffffff'],['12%','#efefef'],['34%','#c0c0c0'],
+     ['65%','#7a7a7a'],['100%','#555555']
+    ].forEach(([off, col]) => {
+      const s = document.createElementNS(NS, 'stop');
+      s.setAttribute('offset', off); s.setAttribute('stop-color', col);
+      grad.appendChild(s);
     });
+    defs.appendChild(grad);
+
+    // Drop shadow filter
+    const filt = document.createElementNS(NS, 'filter');
+    filt.id = 'chain-shadow';
+    filt.setAttribute('x', '-50%'); filt.setAttribute('y', '-50%');
+    filt.setAttribute('width', '200%'); filt.setAttribute('height', '200%');
+    const fe = document.createElementNS(NS, 'feDropShadow');
+    fe.setAttribute('dx', '0.5'); fe.setAttribute('dy', '1');
+    fe.setAttribute('stdDeviation', '0.8'); fe.setAttribute('flood-opacity', '0.4');
+    filt.appendChild(fe); defs.appendChild(filt);
+
+    // Bead symbol: base sphere + specular highlight dot
+    const sym = document.createElementNS(NS, 'symbol');
+    sym.id = 'bead-sym';
+    sym.setAttribute('overflow', 'visible');
+    const base = document.createElementNS(NS, 'circle');
+    base.setAttribute('r', '3.5');
+    base.setAttribute('fill', 'url(#chain-metal)');
+    base.setAttribute('stroke', 'rgba(0,0,0,0.45)');
+    base.setAttribute('stroke-width', '0.5');
+    base.setAttribute('filter', 'url(#chain-shadow)');
+    sym.appendChild(base);
+    const spec = document.createElementNS(NS, 'ellipse');
+    spec.setAttribute('cx', '-1.4'); spec.setAttribute('cy', '-1.8');
+    spec.setAttribute('rx', '1.2'); spec.setAttribute('ry', '0.75');
+    spec.setAttribute('fill', 'rgba(255,255,255,0.8)');
+    sym.appendChild(spec);
+    defs.appendChild(sym);
+
+    // Handle symbol: larger oval with same metallic look
+    const handleSym = document.createElementNS(NS, 'symbol');
+    handleSym.id = 'handle-sym';
+    handleSym.setAttribute('overflow', 'visible');
+    // Generous invisible hit area
+    const hitArea = document.createElementNS(NS, 'circle');
+    hitArea.setAttribute('r', '18');
+    hitArea.setAttribute('fill', 'transparent');
+    handleSym.appendChild(hitArea);
+
+    const handleBase = document.createElementNS(NS, 'circle');
+    handleBase.setAttribute('r', '8');
+    handleBase.setAttribute('fill', 'url(#chain-metal)');
+    handleBase.setAttribute('stroke', 'rgba(0,0,0,0.45)');
+    handleBase.setAttribute('stroke-width', '0.6');
+    handleBase.setAttribute('filter', 'url(#chain-shadow)');
+    handleSym.appendChild(handleBase);
+    const handleSpec = document.createElementNS(NS, 'ellipse');
+    handleSpec.setAttribute('cx', '-2.5');
+    handleSpec.setAttribute('cy', '-3.2');
+    handleSpec.setAttribute('rx', '3');
+    handleSpec.setAttribute('ry', '1.8');
+    handleSpec.setAttribute('fill', 'rgba(255,255,255,0.8)');
+    handleSym.appendChild(handleSpec);
+    defs.appendChild(handleSym);
+
+    svg.appendChild(defs);
+
+    for (let i = 0; i < MAX_BEADS; i++) {
+      const el = document.createElementNS(NS, 'use');
+      el.setAttribute('href', '#bead-sym');
+      svg.appendChild(el);
+      linkEls.push(el);
+    }
+
+    // Handle element — rendered on top of beads
+    handleEl = document.createElementNS(NS, 'use');
+    handleEl.setAttribute('href', '#handle-sym');
+    handleEl.style.cursor = 'none';
+    svg.appendChild(handleEl);
+  })();
+
+  // ── Init nodes — drop in from off-screen with random swing ───
+  const loopStart = performance.now();
+  const swingX = (Math.random() < 0.5 ? 1 : -1) * (15 + Math.random() * 25);
+  for (let i = 0; i < NUM_NODES; i++) {
+    const restY = i * LINK_LEN;
+    const y = restY - 130;
+    const t = i / (NUM_NODES - 1);
+    const x = CX + swingX * t;
+    nodes.push({ x, y, px: x, py: y - 10 });
+  }
+
+  // ── Physics tick ──────────────────────────────────────────────
+  function tick() {
+    // Verlet integration (skip anchor at i=0)
+    for (let i = 1; i < NUM_NODES; i++) {
+      const n = nodes[i];
+      const vx = (n.x - n.px) * DAMPING;
+      const vy = (n.y - n.py) * DAMPING;
+      n.px = n.x; n.py = n.y;
+      n.x += vx; n.y += vy + GRAVITY;
+    }
+
+    // Cursor influence — nudge nodes in the direction the cursor is moving
+    const cvx = mouseX - prevMouseX, cvy = mouseY - prevMouseY;
+    const speed = Math.sqrt(cvx * cvx + cvy * cvy);
+    if (speed > 0.3) {
+      for (let i = 1; i < NUM_NODES; i++) {
+        const n = nodes[i];
+        const dx = n.x - mouseX, dy = n.y - mouseY;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < CURSOR_R * CURSOR_R) {
+          const falloff = 1 - Math.sqrt(d2) / CURSOR_R;
+          n.x += cvx * falloff * CURSOR_F;
+          n.y += cvy * falloff * CURSOR_F;
+        }
+      }
+    }
+
+    // Constraint solving
+    for (let iter = 0; iter < ITERS; iter++) {
+      nodes[0].x = CX; nodes[0].y = 0;
+      for (let i = 0; i < NUM_NODES - 1; i++) {
+        const a = nodes[i], b = nodes[i + 1];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.sqrt(dx * dx + dy * dy) || 0.001;
+        const c = (d - LINK_LEN) / d * 0.5;
+        if (i > 0) { a.x += dx * c; a.y += dy * c; }
+        b.x -= dx * c; b.y -= dy * c;
+      }
+      if (dragging) {
+        nodes[NUM_NODES - 1].x = dragTargetX;
+        nodes[NUM_NODES - 1].y = dragTargetY;
+      }
+    }
+
+    if (dragging) {
+      const pullDist = Math.sqrt((dragTargetX - CX) ** 2 + dragTargetY ** 2) - NATURAL_H;
+      handleEl.style.opacity = (pullDist / TRIGGER) > 0.75 ? '0.5' : '1';
+    }
+  }
+
+  // ── Interpolate a point at fraction t (0..1) along the rope ──
+  function pointOnRope(t) {
+    const segs = []; let total = 0;
+    for (let i = 0; i < NUM_NODES - 1; i++) {
+      const dx = nodes[i+1].x - nodes[i].x, dy = nodes[i+1].y - nodes[i].y;
+      const l = Math.sqrt(dx*dx + dy*dy);
+      segs.push(l); total += l;
+    }
+    const target = t * total;
+    let acc = 0;
+    for (let i = 0; i < NUM_NODES - 1; i++) {
+      const next = acc + segs[i];
+      if (next >= target || i === NUM_NODES - 2) {
+        const lt = segs[i] > 0 ? Math.min(1, (target - acc) / segs[i]) : 0;
+        return {
+          x: nodes[i].x + (nodes[i+1].x - nodes[i].x) * lt,
+          y: nodes[i].y + (nodes[i+1].y - nodes[i].y) * lt,
+        };
+      }
+      acc = next;
+    }
+    return { x: nodes[NUM_NODES-1].x, y: nodes[NUM_NODES-1].y };
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  function render() {
+    const last = nodes[NUM_NODES - 1];
+    svg.setAttribute('height', Math.max(last.y + 22, 20));
+
+    // Measure rope and place beads at even intervals (more beads when pulled)
+    let ropeLen = 0;
+    for (let i = 0; i < NUM_NODES - 1; i++) {
+      const dx = nodes[i+1].x - nodes[i].x, dy = nodes[i+1].y - nodes[i].y;
+      ropeLen += Math.sqrt(dx*dx + dy*dy);
+    }
+    // Beads indexed from bottom — skip i=0 (handle occupies that position)
+    const numBeads = Math.min(MAX_BEADS, Math.floor(ropeLen / LINK_LEN));
+
+    for (let i = 0; i < MAX_BEADS; i++) {
+      const el = linkEls[i];
+      const bi = i + 1; // offset by 1 so beads start above the handle
+      if (i < numBeads) {
+        const t = Math.max(0, 1 - (bi * LINK_LEN) / ropeLen);
+        const pt = pointOnRope(t);
+        el.setAttribute('transform', `translate(${pt.x},${pt.y})`);
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
+    handleEl.setAttribute('transform', `translate(${last.x},${last.y + 5})`);
+  }
+
+  // ── Loop (stops when settled + cursor away) ───────────────────
+  function settled() {
+    return nodes.every((n, i) =>
+      i === 0 || (Math.abs(n.x - n.px) < 0.05 && Math.abs(n.y - n.py) < 0.05));
+  }
+  function cursorNear() {
+    return nodes.some(n => (n.x - mouseX) ** 2 + (n.y - mouseY) ** 2 < CURSOR_R ** 2);
+  }
+  function loop() {
+    tick(); render();
+    const dropping = performance.now() - loopStart < 2500;
+    animId = (dropping || !settled() || dragging || cursorNear()) ? requestAnimationFrame(loop) : null;
+  }
+  function run() { if (!animId) animId = requestAnimationFrame(loop); }
+
+  // ── Pointer events ────────────────────────────────────────────
+  handleEl.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    dragging = true; pendingToggle = false;
+    startClientX = e.clientX; startClientY = e.clientY;
+    startDragX = nodes[NUM_NODES - 1].x;
+    startDragY = nodes[NUM_NODES - 1].y;
+    handleEl.setPointerCapture(e.pointerId);
+    cursorEl?.classList.add('cursor--hidden');
+    run();
+  });
+
+  handleEl.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    let tx = startDragX + (e.clientX - startClientX);
+    let ty = startDragY + (e.clientY - startClientY);
+    // Cap total pull distance from anchor
+    const tdx = tx - CX, tdy = ty;
+    const dist = Math.sqrt(tdx * tdx + tdy * tdy);
+    if (dist > MAX_PULL) {
+      const s = MAX_PULL / dist;
+      tx = CX + tdx * s; ty = tdy * s;
+    }
+    dragTargetX = tx; dragTargetY = ty;
+    const pullDist = dist - NATURAL_H;
+    if (pullDist >= TRIGGER) pendingToggle = true;
+    run();
+  });
+
+  handleEl.addEventListener('pointerup', e => {
+    if (!dragging) return;
+    dragging = false;
+    handleEl.style.opacity = '1';
+    // Warp cursor lib to release position before unhiding to avoid jump
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: e.clientX, clientY: e.clientY, bubbles: true }));
+    cursorEl?.classList.remove('cursor--hidden');
+    if (pendingToggle) {
+      document.documentElement.classList.toggle('dark');
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
+    pendingToggle = false;
+    dragTargetX = CX; dragTargetY = NATURAL_H;
+    run();
+  });
+
+  // ── Custom cursor state for chain area ────────────────────────
+  const cursorEl = document.querySelector('.cursor');
+  const chainRoot = document.getElementById('chain-root');
+  // Chain body → subtle (like profile pic hover)
+  chainRoot.addEventListener('mouseenter', () => cursorEl?.classList.add('cursor--subtle-focused'));
+  chainRoot.addEventListener('mouseleave', () => {
+    cursorEl?.classList.remove('cursor--subtle-focused');
+    cursorEl?.classList.remove('cursor--link-focused');
+  });
+  // Handle → link-focused (overrides subtle)
+  handleEl.addEventListener('mouseenter', () => {
+    cursorEl?.classList.remove('cursor--subtle-focused');
+    cursorEl?.classList.add('cursor--link-focused');
+  });
+  handleEl.addEventListener('mouseleave', () => {
+    cursorEl?.classList.remove('cursor--link-focused');
+    cursorEl?.classList.add('cursor--subtle-focused');
+  });
+
+  // ── Cursor tracking ───────────────────────────────────────────
+  document.addEventListener('mousemove', e => {
+    prevMouseX = mouseX; prevMouseY = mouseY;
+    const r = svg.getBoundingClientRect();
+    mouseX = e.clientX - r.left;
+    mouseY = e.clientY - r.top;
+    run();
+  });
+
+  // ── Init ──────────────────────────────────────────────────────
+  render();
+  run();
+
+  // ── Greeting by time of day ───────────────────────────────────
+  function getGreeting() {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 12)  return 'Good morning!';
+    if (h >= 12 && h < 18) return 'Good afternoon!';
+    return 'Good evening!';
+  }
+  const balloon  = document.querySelector('.speech-balloon');
+  const faceWrap = document.querySelector('.face-wrap');
+  if (faceWrap && balloon) {
+    balloon.textContent = getGreeting();
+    faceWrap.addEventListener('mouseenter', () => { balloon.textContent = getGreeting(); });
   }
 </script>
 
+<style>
+  .shelf-line {
+    background: linear-gradient(to right, transparent, rgba(0,15,29,0.25) 20%, rgba(0,15,29,0.25) 80%, transparent);
+  }
+  :global(.dark) .shelf-line {
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.3) 80%, transparent);
+  }
+</style>
