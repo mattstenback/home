@@ -1,122 +1,387 @@
-<div class="cursor">
-   <div class="cursor-dot"></div>
-   <div class="cursor-border"></div>
+<!-- Chain-handle ring cursor — only visible when hovering the pull chain handle -->
+<div class="cursor-ring" id="cursor-ring">
+  <span class="cursor-label">Pull</span>
 </div>
 
 <script>
-  import CustomCursor from 'custom-cursor.js'; 
+  // Lightweight manual cursor ring — replaces custom-cursor.js
+  const ring = document.getElementById('cursor-ring');
+  let ringX = -100, ringY = -100;
+  let targetX = -100, targetY = -100;
+  let visible = false;
+  let raf = null;
 
-  new CustomCursor('.cursor', {
-    hideTrueCursor: true,
-    focusElements: [
-      {
-        elements: 'img, #matt-stenback-vertical, .hvr-bounce-in, .font-headline', 
-        focusClass: 'cursor--subtle-focused'
-      },
-      {
-        elements: 'button, a', 
-        focusClass: 'cursor--link-focused'
-      },
-    ],
-  })
-    .setPosition(-30, -30)
-    .initialize()
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function animate() {
+    ringX = lerp(ringX, targetX, 0.15);
+    ringY = lerp(ringY, targetY, 0.15);
+    ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    if (visible) raf = requestAnimationFrame(animate);
+  }
+
+  document.addEventListener('mousemove', e => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    // When invisible, snap position so ring doesn't fly in from afar
+    if (!visible) {
+      ringX = targetX;
+      ringY = targetY;
+      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    } else if (!raf) {
+      raf = requestAnimationFrame(animate);
+    }
+  });
+
+  // Expose show/hide for Hero.astro chain events
+  window.__cursorRing = {
+    show() {
+      visible = true;
+      ring.classList.add('cursor-ring--visible');
+      if (!raf) raf = requestAnimationFrame(animate);
+    },
+    hide() {
+      visible = false;
+      ring.classList.remove('cursor-ring--visible');
+      raf = null;
+    },
+    showLabel() { ring.classList.add('cursor-ring--pull-label'); },
+    hideLabel() { ring.classList.remove('cursor-ring--pull-label'); },
+    hideAll() {
+      ring.classList.add('cursor-ring--hidden');
+      ring.classList.remove('cursor-ring--pull-label');
+    },
+    unhideAll() {
+      ring.classList.remove('cursor-ring--hidden');
+    }
+  };
 </script>
 
 <style>
-  .cursor {
-    color: #ff5050;
-    display: none;
-    pointer-events: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    top: 0;
-    left: 0;
+  /* Pixel cursors */
+  :global(*) {
+    cursor: url("/images/cursor-default.svg") 0 0, auto;
+  }
+  :global(a), :global(button), :global([role='button']) {
+    cursor: url("/images/cursor-pointer.svg") 9 0, pointer;
+  }
+  :global(.chain-grabbing),
+  :global(.chain-grabbing) :global(*) {
+    cursor: url("/images/cursor-grabbing.svg") 14 14, grabbing !important;
+  }
+
+  /* Ring cursor — only shows for chain handle hover */
+  .cursor-ring {
     position: fixed;
-    will-change: transform;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
     z-index: 1000;
-  }
-
-  .cursor-border {
-    @apply border border-cartridge-600;
-    position: absolute;
-    box-sizing: border-box;
-    align-items: center;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    height: 60px;
-    width: 60px;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -50%);
-    transition: all 360ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .cursor-dot {
-    @apply bg-green;
-    position: absolute;
-    box-sizing: border-box;
-    align-items: center;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    height: 16px;
-    width: 16px;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -50%);
-    transition: all 360ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .cursor.cursor--initialized {
-    display: block;
-  }
-
-  .cursor.cursor--off-screen {
     opacity: 0;
+    transition: opacity 200ms ease;
   }
 
-  .cursor.cursor--clicking .cursor-border {
-    width: 16px !important;
-    height: 16px !important;
+  .cursor-ring--visible {
+    opacity: 1;
   }
 
-  .cursor.cursor--clicking .cursor-dot {
-    width: 10px !important;
-    height: 10px !important;
+  .cursor-ring--hidden {
+    opacity: 0 !important;
   }
 
-  .cursor.cursor--focused .cursor-border {
+  /* Pixel circle ring — pixelcorners donut on 76x76 */
+  .cursor-ring::after {
+    content: '';
+    position: absolute;
     width: 90px;
     height: 90px;
+    transform: translate(-50%, -50%);
+    background: #A0295A;
+    pointer-events: none;
+    clip-path: polygon(
+      0px calc(100% - 38px),
+      2px calc(100% - 38px),
+      2px calc(100% - 32px),
+      4px calc(100% - 32px),
+      4px calc(100% - 30px),
+      4px calc(100% - 26px),
+      6px calc(100% - 26px),
+      6px calc(100% - 24px),
+      8px calc(100% - 24px),
+      8px calc(100% - 22px),
+      8px calc(100% - 20px),
+      10px calc(100% - 20px),
+      10px calc(100% - 18px),
+      12px calc(100% - 18px),
+      12px calc(100% - 16px),
+      14px calc(100% - 16px),
+      14px calc(100% - 14px),
+      16px calc(100% - 14px),
+      16px calc(100% - 12px),
+      18px calc(100% - 12px),
+      18px calc(100% - 10px),
+      20px calc(100% - 10px),
+      20px calc(100% - 8px),
+      22px calc(100% - 8px),
+      24px calc(100% - 8px),
+      24px calc(100% - 6px),
+      26px calc(100% - 6px),
+      26px calc(100% - 4px),
+      30px calc(100% - 4px),
+      32px calc(100% - 4px),
+      32px calc(100% - 2px),
+      38px calc(100% - 2px),
+      38px 100%,
+      calc(100% - 38px) 100%,
+      calc(100% - 38px) calc(100% - 2px),
+      calc(100% - 32px) calc(100% - 2px),
+      calc(100% - 32px) calc(100% - 4px),
+      calc(100% - 30px) calc(100% - 4px),
+      calc(100% - 26px) calc(100% - 4px),
+      calc(100% - 26px) calc(100% - 6px),
+      calc(100% - 24px) calc(100% - 6px),
+      calc(100% - 24px) calc(100% - 8px),
+      calc(100% - 22px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 10px),
+      calc(100% - 18px) calc(100% - 10px),
+      calc(100% - 18px) calc(100% - 12px),
+      calc(100% - 16px) calc(100% - 12px),
+      calc(100% - 16px) calc(100% - 14px),
+      calc(100% - 14px) calc(100% - 14px),
+      calc(100% - 14px) calc(100% - 16px),
+      calc(100% - 12px) calc(100% - 16px),
+      calc(100% - 12px) calc(100% - 18px),
+      calc(100% - 10px) calc(100% - 18px),
+      calc(100% - 10px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 22px),
+      calc(100% - 8px) calc(100% - 24px),
+      calc(100% - 6px) calc(100% - 24px),
+      calc(100% - 6px) calc(100% - 26px),
+      calc(100% - 4px) calc(100% - 26px),
+      calc(100% - 4px) calc(100% - 30px),
+      calc(100% - 4px) calc(100% - 32px),
+      calc(100% - 2px) calc(100% - 32px),
+      calc(100% - 2px) calc(100% - 38px),
+      100% calc(100% - 38px),
+      100% 38px,
+      calc(100% - 2px) 38px,
+      calc(100% - 2px) 32px,
+      calc(100% - 4px) 32px,
+      calc(100% - 4px) 30px,
+      calc(100% - 4px) 26px,
+      calc(100% - 6px) 26px,
+      calc(100% - 6px) 24px,
+      calc(100% - 8px) 24px,
+      calc(100% - 8px) 22px,
+      calc(100% - 8px) 20px,
+      calc(100% - 10px) 20px,
+      calc(100% - 10px) 18px,
+      calc(100% - 12px) 18px,
+      calc(100% - 12px) 16px,
+      calc(100% - 14px) 16px,
+      calc(100% - 14px) 14px,
+      calc(100% - 16px) 14px,
+      calc(100% - 16px) 12px,
+      calc(100% - 18px) 12px,
+      calc(100% - 18px) 10px,
+      calc(100% - 20px) 10px,
+      calc(100% - 20px) 8px,
+      calc(100% - 22px) 8px,
+      calc(100% - 24px) 8px,
+      calc(100% - 24px) 6px,
+      calc(100% - 26px) 6px,
+      calc(100% - 26px) 4px,
+      calc(100% - 30px) 4px,
+      calc(100% - 32px) 4px,
+      calc(100% - 32px) 2px,
+      calc(100% - 38px) 2px,
+      calc(100% - 38px) 0px,
+      38px 0px,
+      38px 2px,
+      32px 2px,
+      32px 4px,
+      30px 4px,
+      26px 4px,
+      26px 6px,
+      24px 6px,
+      24px 8px,
+      22px 8px,
+      20px 8px,
+      20px 10px,
+      18px 10px,
+      18px 12px,
+      16px 12px,
+      16px 14px,
+      14px 14px,
+      14px 16px,
+      12px 16px,
+      12px 18px,
+      10px 18px,
+      10px 20px,
+      8px 20px,
+      8px 22px,
+      8px 24px,
+      6px 24px,
+      6px 26px,
+      4px 26px,
+      4px 30px,
+      4px 32px,
+      2px 32px,
+      2px 38px,
+      0px 38px,
+      /* inner cutout */
+      0px 50%,
+      2px 50%,
+      2px 38px,
+      4px 38px,
+      4px 32px,
+      6px 32px,
+      6px 30px,
+      6px 26px,
+      8px 26px,
+      8px 24px,
+      10px 24px,
+      10px 22px,
+      10px 20px,
+      12px 20px,
+      12px 18px,
+      14px 18px,
+      14px 16px,
+      16px 16px,
+      16px 14px,
+      18px 14px,
+      18px 12px,
+      20px 12px,
+      20px 10px,
+      22px 10px,
+      24px 10px,
+      24px 8px,
+      26px 8px,
+      26px 6px,
+      30px 6px,
+      32px 6px,
+      32px 4px,
+      38px 4px,
+      38px 2px,
+      calc(100% - 38px) 2px,
+      calc(100% - 38px) 4px,
+      calc(100% - 32px) 4px,
+      calc(100% - 32px) 6px,
+      calc(100% - 30px) 6px,
+      calc(100% - 26px) 6px,
+      calc(100% - 26px) 8px,
+      calc(100% - 24px) 8px,
+      calc(100% - 24px) 10px,
+      calc(100% - 22px) 10px,
+      calc(100% - 20px) 10px,
+      calc(100% - 20px) 12px,
+      calc(100% - 18px) 12px,
+      calc(100% - 18px) 14px,
+      calc(100% - 16px) 14px,
+      calc(100% - 16px) 16px,
+      calc(100% - 14px) 16px,
+      calc(100% - 14px) 18px,
+      calc(100% - 12px) 18px,
+      calc(100% - 12px) 20px,
+      calc(100% - 10px) 20px,
+      calc(100% - 10px) 22px,
+      calc(100% - 10px) 24px,
+      calc(100% - 8px) 24px,
+      calc(100% - 8px) 26px,
+      calc(100% - 6px) 26px,
+      calc(100% - 6px) 30px,
+      calc(100% - 6px) 32px,
+      calc(100% - 4px) 32px,
+      calc(100% - 4px) 38px,
+      calc(100% - 2px) 38px,
+      calc(100% - 2px) calc(100% - 38px),
+      calc(100% - 4px) calc(100% - 38px),
+      calc(100% - 4px) calc(100% - 32px),
+      calc(100% - 6px) calc(100% - 32px),
+      calc(100% - 6px) calc(100% - 30px),
+      calc(100% - 6px) calc(100% - 26px),
+      calc(100% - 8px) calc(100% - 26px),
+      calc(100% - 8px) calc(100% - 24px),
+      calc(100% - 10px) calc(100% - 24px),
+      calc(100% - 10px) calc(100% - 22px),
+      calc(100% - 10px) calc(100% - 20px),
+      calc(100% - 12px) calc(100% - 20px),
+      calc(100% - 12px) calc(100% - 18px),
+      calc(100% - 14px) calc(100% - 18px),
+      calc(100% - 14px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 14px),
+      calc(100% - 18px) calc(100% - 14px),
+      calc(100% - 18px) calc(100% - 12px),
+      calc(100% - 20px) calc(100% - 12px),
+      calc(100% - 20px) calc(100% - 10px),
+      calc(100% - 22px) calc(100% - 10px),
+      calc(100% - 24px) calc(100% - 10px),
+      calc(100% - 24px) calc(100% - 8px),
+      calc(100% - 26px) calc(100% - 8px),
+      calc(100% - 26px) calc(100% - 6px),
+      calc(100% - 30px) calc(100% - 6px),
+      calc(100% - 32px) calc(100% - 6px),
+      calc(100% - 32px) calc(100% - 4px),
+      calc(100% - 38px) calc(100% - 4px),
+      calc(100% - 38px) calc(100% - 2px),
+      38px calc(100% - 2px),
+      38px calc(100% - 4px),
+      32px calc(100% - 4px),
+      32px calc(100% - 6px),
+      30px calc(100% - 6px),
+      26px calc(100% - 6px),
+      26px calc(100% - 8px),
+      24px calc(100% - 8px),
+      24px calc(100% - 10px),
+      22px calc(100% - 10px),
+      20px calc(100% - 10px),
+      20px calc(100% - 12px),
+      18px calc(100% - 12px),
+      18px calc(100% - 14px),
+      16px calc(100% - 14px),
+      16px calc(100% - 16px),
+      14px calc(100% - 16px),
+      14px calc(100% - 18px),
+      12px calc(100% - 18px),
+      12px calc(100% - 20px),
+      10px calc(100% - 20px),
+      10px calc(100% - 22px),
+      10px calc(100% - 24px),
+      8px calc(100% - 24px),
+      8px calc(100% - 26px),
+      6px calc(100% - 26px),
+      6px calc(100% - 30px),
+      6px calc(100% - 32px),
+      4px calc(100% - 32px),
+      4px calc(100% - 38px),
+      2px calc(100% - 38px),
+      2px 50%,
+      0px 50%
+    );
   }
 
-  .cursor.cursor--link-focused .cursor-border {
-    width: 90px;
-    height: 90px;
-    @apply border-green;
-  }
-
-  .cursor.cursor--link-focused .cursor-dot {
-    @apply bg-cartridge-600 bg-opacity-0;
-  }
-
- .cursor.cursor--subtle-focused .cursor-border {
-    width: 30px;
-    height: 30px;
-    @apply bg-green bg-opacity-25 border-none;
-  }
-
-  .cursor.cursor--subtle-focused .cursor-dot {
-    width: 30px;
-    height: 30px;
-    @apply bg-green bg-opacity-0;
-  }
-
-  .cursor.cursor--hidden {
+  .cursor-label {
+    position: absolute;
+    left: 0;
+    top: 48px;
+    transform: translateX(-50%);
+    color: #A0295A;
+    font-family: 'PPNeueBit', monospace;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
     opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+
+  .cursor-ring--pull-label .cursor-label {
+    opacity: 1;
   }
 </style>

@@ -21,11 +21,13 @@ module.exports = {
 			'blue': '#4da2ff',
 			'turquoise': '#5dceff',
 			'green': '#21935b',
+			'plum': '#A0295A',
 		},
 		fontFamily: {
-			'serif': ['swear-text', 'serif'],
-			'display': ['DegularDisplay', 'irregardless-variable', 'sans-serif'],
-			'sans': ['DegularText', 'sans-serif'],
+			'serif': ['DegularText', 'serif'],
+			'display': ['Obviously', 'DegularDisplay', 'irregardless-variable', 'sans-serif'],
+			'body': ['DegularText', 'sans-serif'],
+			'sans': ['PPNeueBit', 'monospace'],
 			'mono': ['VulfMonoLightItalic', 'monospace'],
 		},
 		extend: {

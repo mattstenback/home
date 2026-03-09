@@ -36,7 +36,7 @@ const { title } = Astro.props;
 		</script>
 	</head>
 
-	<body class="bg-paper dark:bg-indigo text-indigo dark:text-paper transition-colors duration-300">
+	<body class="bg-paper dark:bg-indigo text-indigo dark:text-paper relative z-0" style="transition:background-color 100ms linear,color 100ms linear">
 		<slot />
 	</body>
 </html>
