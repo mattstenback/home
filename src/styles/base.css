@@ -173,6 +173,137 @@ body::after { display: none; }
     transition: transform 0.15s ease-out;
   }
 
+  /* Pixel-rounded button corners (radius=9, more rounded) */
+  .pixel-btn-wrap {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+  }
+  .pixel-btn-wrap::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 100%;
+    height: 100%;
+    background: #1a1a2e;
+    clip-path: polygon(0px calc(100% - 18px),
+      2px calc(100% - 18px), 2px calc(100% - 16px), 2px calc(100% - 12px),
+      4px calc(100% - 12px), 4px calc(100% - 10px), 6px calc(100% - 10px),
+      6px calc(100% - 8px), 8px calc(100% - 6px), 10px calc(100% - 6px),
+      10px calc(100% - 4px), 12px calc(100% - 4px), 12px calc(100% - 2px),
+      16px calc(100% - 2px), 18px calc(100% - 2px), 18px 100%,
+      calc(100% - 18px) 100%, calc(100% - 18px) calc(100% - 2px),
+      calc(100% - 16px) calc(100% - 2px), calc(100% - 12px) calc(100% - 2px),
+      calc(100% - 12px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px),
+      calc(100% - 10px) calc(100% - 6px), calc(100% - 8px) calc(100% - 6px),
+      calc(100% - 6px) calc(100% - 8px), calc(100% - 6px) calc(100% - 10px),
+      calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 2px) calc(100% - 12px), calc(100% - 2px) calc(100% - 16px),
+      calc(100% - 2px) calc(100% - 18px), 100% calc(100% - 18px),
+      100% 18px, calc(100% - 2px) 18px, calc(100% - 2px) 16px,
+      calc(100% - 2px) 12px, calc(100% - 4px) 12px, calc(100% - 4px) 10px,
+      calc(100% - 6px) 10px, calc(100% - 6px) 8px, calc(100% - 8px) 6px,
+      calc(100% - 10px) 6px, calc(100% - 10px) 4px, calc(100% - 12px) 4px,
+      calc(100% - 12px) 2px, calc(100% - 16px) 2px, calc(100% - 18px) 2px,
+      calc(100% - 18px) 0px, 18px 0px, 18px 2px, 16px 2px, 12px 2px,
+      12px 4px, 10px 4px, 10px 6px, 8px 6px, 6px 8px, 6px 10px,
+      4px 10px, 4px 12px, 2px 12px, 2px 16px, 2px 18px, 0px 18px);
+  }
+  .dark .pixel-btn-wrap::before {
+    background: #000a14;
+  }
+
+  .pixel-btn {
+    position: relative;
+    display: inline-block;
+    clip-path: polygon(0px calc(100% - 18px),
+      2px calc(100% - 18px), 2px calc(100% - 16px), 2px calc(100% - 12px),
+      4px calc(100% - 12px), 4px calc(100% - 10px), 6px calc(100% - 10px),
+      6px calc(100% - 8px), 8px calc(100% - 6px), 10px calc(100% - 6px),
+      10px calc(100% - 4px), 12px calc(100% - 4px), 12px calc(100% - 2px),
+      16px calc(100% - 2px), 18px calc(100% - 2px), 18px 100%,
+      calc(100% - 18px) 100%, calc(100% - 18px) calc(100% - 2px),
+      calc(100% - 16px) calc(100% - 2px), calc(100% - 12px) calc(100% - 2px),
+      calc(100% - 12px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px),
+      calc(100% - 10px) calc(100% - 6px), calc(100% - 8px) calc(100% - 6px),
+      calc(100% - 6px) calc(100% - 8px), calc(100% - 6px) calc(100% - 10px),
+      calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 2px) calc(100% - 12px), calc(100% - 2px) calc(100% - 16px),
+      calc(100% - 2px) calc(100% - 18px), 100% calc(100% - 18px),
+      100% 18px, calc(100% - 2px) 18px, calc(100% - 2px) 16px,
+      calc(100% - 2px) 12px, calc(100% - 4px) 12px, calc(100% - 4px) 10px,
+      calc(100% - 6px) 10px, calc(100% - 6px) 8px, calc(100% - 8px) 6px,
+      calc(100% - 10px) 6px, calc(100% - 10px) 4px, calc(100% - 12px) 4px,
+      calc(100% - 12px) 2px, calc(100% - 16px) 2px, calc(100% - 18px) 2px,
+      calc(100% - 18px) 0px, 18px 0px, 18px 2px, 16px 2px, 12px 2px,
+      12px 4px, 10px 4px, 10px 6px, 8px 6px, 6px 8px, 6px 10px,
+      4px 10px, 4px 12px, 2px 12px, 2px 16px, 2px 18px, 0px 18px);
+    border: 2px solid transparent;
+  }
+  .pixel-btn::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: -2px;
+    display: block;
+    pointer-events: none;
+    background: #1a1a2e;
+    clip-path: polygon(0px calc(100% - 18px),
+      2px calc(100% - 18px), 2px calc(100% - 16px), 2px calc(100% - 12px),
+      4px calc(100% - 12px), 4px calc(100% - 10px), 6px calc(100% - 10px),
+      6px calc(100% - 8px), 8px calc(100% - 6px), 10px calc(100% - 6px),
+      10px calc(100% - 4px), 12px calc(100% - 4px), 12px calc(100% - 2px),
+      16px calc(100% - 2px), 18px calc(100% - 2px), 18px 100%,
+      calc(100% - 18px) 100%, calc(100% - 18px) calc(100% - 2px),
+      calc(100% - 16px) calc(100% - 2px), calc(100% - 12px) calc(100% - 2px),
+      calc(100% - 12px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px),
+      calc(100% - 10px) calc(100% - 6px), calc(100% - 8px) calc(100% - 6px),
+      calc(100% - 6px) calc(100% - 8px), calc(100% - 6px) calc(100% - 10px),
+      calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 2px) calc(100% - 12px), calc(100% - 2px) calc(100% - 16px),
+      calc(100% - 2px) calc(100% - 18px), 100% calc(100% - 18px),
+      100% 18px, calc(100% - 2px) 18px, calc(100% - 2px) 16px,
+      calc(100% - 2px) 12px, calc(100% - 4px) 12px, calc(100% - 4px) 10px,
+      calc(100% - 6px) 10px, calc(100% - 6px) 8px, calc(100% - 8px) 6px,
+      calc(100% - 10px) 6px, calc(100% - 10px) 4px, calc(100% - 12px) 4px,
+      calc(100% - 12px) 2px, calc(100% - 16px) 2px, calc(100% - 18px) 2px,
+      calc(100% - 18px) 0px, 18px 0px, 18px 2px, 16px 2px, 12px 2px,
+      12px 4px, 10px 4px, 10px 6px, 8px 6px, 6px 8px, 6px 10px,
+      4px 10px, 4px 12px, 2px 12px, 2px 16px, 2px 18px, 0px 18px,
+      0px 50%, 2px 50%, 2px 18px, 4px 18px, 4px 16px, 4px 12px,
+      6px 12px, 6px 10px, 8px 10px, 8px 8px, 10px 8px, 10px 6px,
+      12px 6px, 12px 4px, 16px 4px, 18px 4px, 18px 2px,
+      calc(100% - 18px) 2px, calc(100% - 18px) 4px, calc(100% - 16px) 4px,
+      calc(100% - 12px) 4px, calc(100% - 12px) 6px, calc(100% - 10px) 6px,
+      calc(100% - 10px) 8px, calc(100% - 8px) 8px, calc(100% - 8px) 10px,
+      calc(100% - 6px) 10px, calc(100% - 6px) 12px, calc(100% - 4px) 12px,
+      calc(100% - 4px) 16px, calc(100% - 4px) 18px, calc(100% - 2px) 18px,
+      calc(100% - 2px) calc(100% - 18px), calc(100% - 4px) calc(100% - 18px),
+      calc(100% - 4px) calc(100% - 16px), calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 6px) calc(100% - 12px), calc(100% - 6px) calc(100% - 10px),
+      calc(100% - 8px) calc(100% - 10px), calc(100% - 8px) calc(100% - 8px),
+      calc(100% - 10px) calc(100% - 8px), calc(100% - 10px) calc(100% - 6px),
+      calc(100% - 12px) calc(100% - 6px), calc(100% - 12px) calc(100% - 4px),
+      calc(100% - 16px) calc(100% - 4px), calc(100% - 18px) calc(100% - 4px),
+      calc(100% - 18px) calc(100% - 2px), 18px calc(100% - 2px),
+      18px calc(100% - 4px), 16px calc(100% - 4px), 12px calc(100% - 4px),
+      12px calc(100% - 6px), 10px calc(100% - 6px), 10px calc(100% - 8px),
+      8px calc(100% - 8px), 8px calc(100% - 10px), 6px calc(100% - 10px),
+      6px calc(100% - 12px), 4px calc(100% - 12px), 4px calc(100% - 16px),
+      4px calc(100% - 18px), 2px calc(100% - 18px), 2px 50%, 0px 50%);
+  }
+  .dark .pixel-btn::after {
+    background: #e0d6c8;
+  }
+
+  .pixel-btn-wrap:hover .pixel-btn {
+    transform: translate(1px, 1px);
+  }
+  .pixel-btn-wrap:active .pixel-btn {
+    transform: translate(3px, 3px);
+  }
+
   /* Pixel-rounded corners — shared clip-path (radius=4, multiplier=2, border=2) */
   .pixel-corners {
     clip-path: polygon(
@@ -321,7 +452,7 @@ body::after { display: none; }
   .speech-balloon {
     position: absolute;
     left: 60%;
-    bottom: calc(100% - 26px);
+    bottom: calc(100% - clamp(18px, 2.5vw, 38px));
     transform: translateX(-50%) translateY(4px);
     top: auto;
     right: auto;
@@ -358,9 +489,22 @@ body::after { display: none; }
   .dark .speech-balloon {
     background: #000f1d;
     color: #f7f7f7;
+    text-shadow: none;
+    filter: drop-shadow(0 0 4px rgba(155,188,15,0.4)) drop-shadow(0 0 12px rgba(155,188,15,0.2));
+  }
+  .theme-transitioning .speech-balloon {
+    filter: none !important;
+    text-shadow: none !important;
+  }
+  .theme-transitioning .pixel-box p {
+    background-image: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    text-shadow: none !important;
   }
   .dark .speech-balloon::after {
-    background: #f7f7f7;
+    background: #9bbc0f;
   }
   .face-container:hover ~ .speech-balloon {
     opacity: 1;

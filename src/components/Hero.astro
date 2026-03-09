@@ -1,7 +1,7 @@
 <div class="relative min-h-[100dvh] flex flex-col px-2 md:px-10">
 
   <!-- Hero content — centered -->
-  <div class="pt-[calc(50dvh-9rem)] md:pt-[calc(50dvh-15rem)] pb-8 md:pb-12 flex flex-col items-center">
+  <div class="pt-[calc(50dvh-12rem)] md:pt-[calc(50dvh-18rem)] pb-8 md:pb-12 flex flex-col items-center">
 
     <!-- Name + body copy — width driven by h1 via JS after font load -->
     <div id="hero-block" class="text-center md:text-left min-w-0">
@@ -22,15 +22,16 @@
         <div class="pixel-corners speech-balloon" id="speech-balloon">Hello there!</div>
         <span class="block hero-stenback intro-fade" style="opacity:0;--intro-delay:120ms"><span class="kern-S">S</span><span class="kern-T3">T</span><span class="kern-E">E</span><span class="kern-N">N</span><span class="kern-B">B</span><span class="kern-A2">A</span><span class="kern-C">C</span><span class="kern-K">K</span></span>
       </h1>
-      <div id="hero-body" class="mt-14 md:mt-16 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
+      <div id="hero-body" class="mt-10 md:mt-12 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
         <div>
           <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4] mb-3">
-            I'm a designer and developer with a particular interest in UX and the
-            practical application of AI. I get up in the morning for a big vision,
-            and I stay up late for the small details.
+            I make products that change behavior. I'm a generalist with twenty years experience across games, mobile, web, biotech, and legal tech. I care about craft and impact, and I have a bias for action.
+          </p>
+          <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4] mb-3">
+            Currently leading product at <a href="https://spellbook.legal" target="_blank">Spellbook</a>.
           </p>
           <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4]">
-            Currently at <a href="https://spellbook.legal" target="_blank">Spellbook</a>
+            <a href="mailto:hello@mattstenback.com">Email me</a>, or find me on <a href="https://linkedin.com/in/matthewstenback" target="_blank">LinkedIn</a> and <a href="https://instagram.com/stenback" target="_blank">Instagram</a>.
           </p>
         </div>
       </div>
@@ -472,8 +473,10 @@
     document.body.classList.remove('chain-grabbing');
     window.__cursorRing?.unhideAll();
     if (pendingToggle) {
+      document.documentElement.classList.add('theme-transitioning');
       document.documentElement.classList.toggle('dark');
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
     }
     pendingToggle = false;
     dragTargetX = CX; dragTargetY = NATURAL_H;
@@ -672,6 +675,16 @@
   }
 
   /* Dark mode — CRT scanlines + phosphor glow */
+  :global(.theme-transitioning) .hero-matt,
+  :global(.theme-transitioning) .hero-stenback {
+    background-image: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
   :global(.dark) .hero-matt,
   :global(.dark) .hero-stenback {
     background-image:
