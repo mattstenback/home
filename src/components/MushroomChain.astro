@@ -78,13 +78,8 @@
     mushChain.hide();
     clearAllMushrooms();
     faceScale = 1;
-    const container = document.querySelector('.face-container');
-    if (container) {
-      container.style.transition = '';
-      container.style.transform = 'translateX(-50%)';
-      container.style.transformOrigin = '';
-      container.style.filter = '';
-    }
+    const wrap = document.querySelector('.face-container .face-wrap');
+    if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; wrap.style.filter = ''; }
   });
 
   // ── Mushroom Sprite ──────────────────────────────────────────
@@ -96,7 +91,7 @@
   function spawnMushroom(x, y) {
     const el = document.createElement('div');
     el.className = 'mushroom-item';
-    el.style.cssText = `position:absolute;width:${MW}px;height:${MH}px;background-image:url(/images/mushroom.svg);background-size:contain;background-repeat:no-repeat;pointer-events:auto;cursor:url('/images/cursor-grab.svg') 14 14,grab;image-rendering:pixelated;will-change:transform;`;
+    el.style.cssText = `position:absolute;width:${MW}px;height:${MH}px;background-image:url(/images/mushroom.svg);background-size:contain;background-repeat:no-repeat;pointer-events:auto;cursor:url('/images/cursor-grab.svg') 14 14,grab;image-rendering:pixelated;will-change:transform;touch-action:none;`;
     el.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
     mushLayer.appendChild(el);
     const m = { el, x, y, vx:(Math.random()-0.5)*3, vy:Math.random()*2+1, grounded:false, dirX:Math.random()<0.5?1:-1, dragging:false, dragOffX:0, dragOffY:0 };
@@ -137,7 +132,16 @@
 
       if (!m.grounded) {
         m.vy += MUSH_GRAVITY; m.x += m.vx; m.y += m.vy;
-        if (m.y >= floor) { m.y = floor; m.vy = 0; m.vx = 0; m.grounded = true; }
+        // Bounce off walls and ceiling
+        if (m.x < 0) { m.x = 0; m.vx = -m.vx; }
+        else if (m.x > vw - MW) { m.x = vw - MW; m.vx = -m.vx; }
+        if (m.y < 0) { m.y = 0; m.vy = -m.vy; }
+        // Floor: damped bounce or settle
+        if (m.y >= floor) {
+          m.y = floor;
+          if (Math.abs(m.vy) < 2) { m.vy = 0; m.vx = 0; m.grounded = true; }
+          else { m.vy *= -0.5; m.vx *= 0.9; }
+        }
       } else {
         m.x += m.dirX * SLIDE_SPEED;
         if (m.x <= 0) { m.x = 0; m.dirX = 1; }
@@ -177,6 +181,9 @@
 
   // ── Mushroom Drag ──────────────────────────────────────────────
   function setupMushroomDrag(m) {
+    let lastX = 0, lastY = 0, lastT = 0;
+    let trackVx = 0, trackVy = 0;
+
     m.el.addEventListener('pointerdown', e => {
       e.preventDefault(); e.stopPropagation();
       m.dragging = true; m.grounded = false;
@@ -184,19 +191,37 @@
       m.el.setPointerCapture(e.pointerId);
       m.el.style.cursor = "url('/images/cursor-grabbing.svg') 14 14, grabbing";
       m.el.style.zIndex = '100';
+      m.el.style.transition = 'filter 0.15s ease';
+      m.el.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))';
       document.body.style.cursor = "url('/images/cursor-grabbing.svg') 14 14, grabbing";
+      lastX = e.clientX; lastY = e.clientY; lastT = e.timeStamp;
+      trackVx = 0; trackVy = 0;
     });
     m.el.addEventListener('pointermove', e => {
       if (!m.dragging) return;
       m.x = e.clientX - m.dragOffX; m.y = e.clientY - m.dragOffY;
       m.el.style.transform = `translate(${Math.round(m.x)}px,${Math.round(m.y)}px)`;
+      // Track velocity for throw
+      const dt = e.timeStamp - lastT;
+      if (dt > 0) {
+        const rawVx = (e.clientX - lastX) / dt * 16; // per-frame velocity at ~60fps
+        const rawVy = (e.clientY - lastY) / dt * 16;
+        trackVx = trackVx * 0.6 + rawVx * 0.4; // smooth
+        trackVy = trackVy * 0.6 + rawVy * 0.4;
+      }
+      lastX = e.clientX; lastY = e.clientY; lastT = e.timeStamp;
     });
     m.el.addEventListener('pointerup', () => {
       if (!m.dragging) return;
       m.dragging = false;
       m.el.style.cursor = "url('/images/cursor-grab.svg') 14 14, grab";
       m.el.style.zIndex = ''; document.body.style.cursor = '';
-      m.vy = 0; m.vx = 0;
+      m.el.style.filter = '';
+      // Apply throw velocity (clamped)
+      const maxV = 20;
+      m.vx = Math.max(-maxV, Math.min(maxV, trackVx));
+      m.vy = Math.max(-maxV, Math.min(maxV, trackVy));
+      m.grounded = false;
       startMushroomLoop();
     });
   }
@@ -222,13 +247,13 @@
 
   function growFace() {
     faceScale += 0.20;
-    const container = document.querySelector('.face-container');
-    if (container) {
-      container.style.transformOrigin = 'center bottom';
-      container.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
-      container.style.transform = `translateX(-50%) scale(${faceScale})`;
-      container.style.filter = 'brightness(1.3)';
-      setTimeout(() => { container.style.filter = ''; }, 200);
+    const wrap = document.querySelector('.face-container .face-wrap');
+    if (wrap) {
+      wrap.style.transition = 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1), filter 0.15s';
+      wrap.style.width = `calc(clamp(80px, 12.5vw, 182px) * ${faceScale})`;
+      wrap.style.height = `calc(clamp(96px, 15vw, 219px) * ${faceScale})`;
+      wrap.style.filter = 'brightness(1.3)';
+      setTimeout(() => { wrap.style.filter = ''; }, 200);
     }
     playGrowSound();
   }
@@ -237,8 +262,8 @@
   window.__mushEffect = {
     resetFaceScale() {
       faceScale = 1;
-      const container = document.querySelector('.face-container');
-      if (container) { container.style.transition = ''; container.style.transform = 'translateX(-50%)'; container.style.transformOrigin = ''; }
+      const wrap = document.querySelector('.face-container .face-wrap');
+      if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; wrap.style.filter = ''; }
     },
     clear() { clearAllMushrooms(); }
   };

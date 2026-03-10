@@ -23,7 +23,7 @@
         <div class="pixel-corners speech-balloon" id="speech-balloon">Hello there!</div>
         <span class="block hero-stenback intro-fade" style="opacity:0;--intro-delay:120ms"><span class="kern-S">S</span><span class="kern-T3">T</span><span class="kern-E">E</span><span class="kern-N">N</span><span class="kern-B">B</span><span class="kern-A2">A</span><span class="kern-C">C</span><span class="kern-K">K</span></span>
       </h1>
-      <div id="hero-body" class="mt-5 md:mt-6 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
+      <div id="hero-body" class="relative z-[2] mt-5 md:mt-6 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
         <div>
           <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4] mb-3">
             I make products that spark joy and shape behaviour. I'm a generalist with twenty years experience across games, mobile, web, biotech, and legal tech. I care about craft and impact, and I have a bias for action.
@@ -247,18 +247,6 @@
       const html = document.documentElement;
       html.classList.toggle('dark');
       localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
-      // Delay glow clipping so it doesn't interfere with the transition
-      const matt = document.querySelector('.hero-matt');
-      const sten = document.querySelector('.hero-stenback');
-      if (html.classList.contains('dark')) {
-        setTimeout(() => {
-          matt?.classList.add('glow-clip');
-          sten?.classList.add('glow-clip');
-        }, 50);
-      } else {
-        matt?.classList.remove('glow-clip');
-        sten?.classList.remove('glow-clip');
-      }
     },
   });
 
@@ -287,11 +275,6 @@
         }
         // Reveal dark mode chain after hero intro completes
         setTimeout(() => darkChain.reveal(), 700);
-        // Apply glow clipping if already in dark mode
-        if (document.documentElement.classList.contains('dark')) {
-          document.querySelector('.hero-matt')?.classList.add('glow-clip');
-          document.querySelector('.hero-stenback')?.classList.add('glow-clip');
-        }
       });
     }));
   });
@@ -320,7 +303,10 @@
     overflow: hidden;
   }
   .hero-matt::after { display: none; }
-  .glow-clip { clip-path: inset(0); }
+  :global(.dark) .hero-matt,
+  :global(.dark) .hero-stenback {
+    overflow: visible;
+  }
   .hero-stenback {
     font-family: 'ObviouslyCondensed', 'Obviously', sans-serif;
     font-size: clamp(6rem, 16.5vw, 13.5rem);
