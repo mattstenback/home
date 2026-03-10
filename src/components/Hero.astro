@@ -72,15 +72,13 @@
   const fixed = [
     '...',
     '...our princess is in another castle',
-    'The cake is a lie',
     'Stay awhile and listen',
-    'Hey! Listen',
     'A wild MATT appeared',
     '...', '...............', '.............................................',
     'Are you still there?',
     "Oh, it's you",
-    'Please stop poking me',
     'I can see you hovering',
+    'Please stop poking me',
     "We've been over this",
     "I'm starting to worry about you",
     '...',
@@ -88,23 +86,24 @@
     "You've seen them all now",
     "There's no secret ending",
     '...or is there?',
-    "No, really... whoops, ignore that thing up there!", // PHASE 1 trigger
-    "Nothing else to see... ah",                        // PHASE navi trigger
-    'Alright... If you insist...',                      // PHASE 2 trigger
+    "No, really... whoops... ignore that!",              // PHASE 1 trigger
+    "Nothing else to see... oh come on",               // PHASE navi trigger
+    '...',
+    'OK OK... have at it',                               // PHASE 2 trigger
     "Look at all the fun we're having",
     '..............................',
     'You win, OK?',
+    'You know I have to clean all this up, right?',
     "I hope you're happy",
     '...',
-    '*slow clap*',
     '[Matt.exe has stopped responding]',                // PHASE 3 trigger
   ];
 
   // Phase triggers: seqIndex value AFTER increment → phase name
-  // fixed[20] = "whoops, ignore that thing up there!" → seq index 3+20=23, after increment = 24
-  // fixed[21] = "Nothing else to see... ah" → seq index 3+21=24, after increment = 25
-  // fixed[22] = "Alright... If you insist..." → seq index 3+22=25, after increment = 26
-  const PHASE_TRIGGERS = { 24: 'phase-1', 25: 'phase-navi', 26: 'phase-2' };
+  // fixed[18] = "whoops, ignore that..." → seq index 3+18=21, after increment = 22
+  // fixed[19] = "oh come on" → seq index 3+19=22, after increment = 23
+  // fixed[21] = "If you insist..." → seq index 3+21=24, after increment = 25
+  const PHASE_TRIGGERS = { 22: 'phase-1', 23: 'phase-navi', 25: 'phase-2' };
 
   let sequence = [...shuffle([...hellos]), ...fixed];
   let seqIndex = 0;
@@ -338,8 +337,8 @@
     z-index: 10;
   }
   .face-container .face-wrap {
-    width: clamp(80px, 12.5vw, 182px);
-    height: clamp(96px, 15vw, 219px);
+    width: clamp(88px, 13.75vw, 200px);
+    height: clamp(106px, 16.5vw, 241px);
     overflow: hidden;
   }
   .face-container::before {
@@ -407,7 +406,7 @@
   }
   @keyframes intro-face-up {
     to {
-      transform: translateY(35%);
+      transform: translateY(32%);
     }
   }
 

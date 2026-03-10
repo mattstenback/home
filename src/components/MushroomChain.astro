@@ -1,6 +1,6 @@
 <!-- Mushroom pull-chain — rains pixelated mushrooms, grows face -->
 <div id="mush-chain-root" class="fixed z-50 flex flex-col items-center"
-  style="top: -10px; left: calc(50% + min(120px, 17.5vw)); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  style="top: -10px; left: calc(50% + min(120px, 17.5vw)); width: 20px; transform: translateX(-50%); user-select: none; -webkit-user-select: none; visibility: hidden;">
   <svg id="mush-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
     style="overflow: visible; display: block; flex-shrink: 0;"
     shape-rendering="crispEdges">
@@ -228,37 +228,19 @@
 
   // ── Face Growth (20% per mushroom) ─────────────────────────────
   let faceScale = 1;
-  const GROW_NOTES = [523.25, 659.25, 783.99, 1046.50];
-
-  function playGrowSound() {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      GROW_NOTES.forEach((freq, i) => {
-        const osc = ctx.createOscillator(), gain = ctx.createGain();
-        osc.type = 'square'; osc.frequency.value = freq;
-        gain.gain.value = 0.08;
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.15);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.08);
-        osc.stop(ctx.currentTime + i * 0.08 + 0.2);
-      });
-    } catch(e) {}
-  }
-
   function growFace() {
     faceScale += 0.20;
     const wrap = document.querySelector('.face-container .face-wrap');
     if (wrap) {
       wrap.style.transition = 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
-      wrap.style.width = `calc(clamp(80px, 12.5vw, 182px) * ${faceScale})`;
-      wrap.style.height = `calc(clamp(96px, 15vw, 219px) * ${faceScale})`;
+      wrap.style.width = `calc(clamp(88px, 13.75vw, 200px) * ${faceScale})`;
+      wrap.style.height = `calc(clamp(106px, 16.5vw, 241px) * ${faceScale})`;
       const img = wrap.querySelector('.peek-img');
       if (img) {
         img.style.filter = 'brightness(1.3)';
         setTimeout(() => { img.style.filter = ''; }, 200);
       }
     }
-    playGrowSound();
   }
 
   // Expose for portal reset

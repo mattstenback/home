@@ -1,6 +1,6 @@
 <!-- Star pull-chain — bouncing invincibility star, rainbow seizure mode -->
 <div id="star-chain-root" class="fixed z-50 flex flex-col items-center"
-  style="top: -10px; left: calc(50% + min(240px, 35vw)); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  style="top: -10px; left: calc(50% + min(120px, 17.5vw) * 2); width: 20px; transform: translateX(-50%); user-select: none; -webkit-user-select: none; visibility: hidden;">
   <svg id="star-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
     style="overflow: visible; display: block; flex-shrink: 0;"
     shape-rendering="crispEdges">
@@ -245,7 +245,6 @@
   // ── Star Mode ───────────────────────────────────────────────────
   function activateStarMode() {
     document.documentElement.classList.add('star-mode');
-    playStarArpeggio();
     // Reset end timer — star mode persists 3.5s after LAST burst
     if (starModeEndTimer) clearTimeout(starModeEndTimer);
     starModeEndTimer = window.setTimeout(() => {
@@ -259,25 +258,6 @@
     document.documentElement.classList.remove('star-mode');
   }
 
-  // ── Star Arpeggio ───────────────────────────────────────────────
-  const STAR_NOTES = [659.25, 830.61, 987.77, 1318.51]; // E5, G#5, B5, E6
-
-  function playStarArpeggio() {
-    try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      STAR_NOTES.forEach((freq, i) => {
-        const osc = ctx.createOscillator(), gain = ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.value = freq;
-        gain.gain.value = 0.08;
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.15);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + i * 0.08);
-        osc.stop(ctx.currentTime + i * 0.08 + 0.2);
-      });
-    } catch (e) {}
-  }
 
   // Expose for portal reset
   (window as any).__starEffect = {
