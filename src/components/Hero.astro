@@ -136,6 +136,7 @@
       if (!img) return;
       if (peekTimeout) clearTimeout(peekTimeout);
       if (typeTimer) clearInterval(typeTimer);
+      balloon.style.width = '';
       img.classList.add('peeking');
       balloon.textContent = '!';
       peekTimeout = setTimeout(() => {
