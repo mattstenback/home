@@ -1,0 +1,318 @@
+<!-- Cake pull-chain — rains pixel cakes that fall off screen, "The cake is a lie" on click -->
+<div id="cake-chain-root" class="fixed z-50 flex flex-col items-center"
+  style="top: -10px; left: calc(50% - min(240px, 35vw)); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  <svg id="cake-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
+    style="overflow: visible; display: block; flex-shrink: 0;"
+    shape-rendering="crispEdges">
+  </svg>
+  <div id="cake-handle-hit" style="position:absolute; width:44px; height:44px; border-radius:50%; pointer-events:auto; cursor: url('/images/cursor-grab.svg') 14 14, grab; transform: translate(-50%, -50%); touch-action: none;"></div>
+</div>
+
+<div id="cake-layer" style="position:fixed; inset:0; pointer-events:none; z-index:40; overflow:hidden;"></div>
+
+<script>
+  import { createChain } from '../scripts/chain-physics.js';
+
+  const cakeChain = createChain({
+    svgId: 'cake-chain-svg',
+    handleHitId: 'cake-handle-hit',
+    rootId: 'cake-chain-root',
+    cursorLabel: 'Release the cake!',
+    trigger: 30,
+    handleSymbolId: 'cake-handle-sym',
+    buildHandleSymbol(NS) {
+      const sym = document.createElementNS(NS, 'symbol');
+      const hit = document.createElementNS(NS, 'circle');
+      hit.setAttribute('r', '18'); hit.setAttribute('fill', 'transparent');
+      sym.appendChild(hit);
+      // Base pink
+      const base = document.createElementNS(NS, 'rect');
+      base.setAttribute('x', '-7'); base.setAttribute('y', '-7');
+      base.setAttribute('width', '14'); base.setAttribute('height', '14');
+      base.setAttribute('fill', '#e890a0');
+      sym.appendChild(base);
+      // Highlight top-left 4x4
+      const hi = document.createElementNS(NS, 'rect');
+      hi.setAttribute('x', '-7'); hi.setAttribute('y', '-7');
+      hi.setAttribute('width', '4'); hi.setAttribute('height', '4');
+      hi.setAttribute('fill', '#ffc0d0');
+      sym.appendChild(hi);
+      // Highlight top edge
+      const ht = document.createElementNS(NS, 'rect');
+      ht.setAttribute('x', '-3'); ht.setAttribute('y', '-7');
+      ht.setAttribute('width', '10'); ht.setAttribute('height', '2');
+      ht.setAttribute('fill', '#f0a0b0');
+      sym.appendChild(ht);
+      // Highlight left edge
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', '-7'); hl.setAttribute('y', '-3');
+      hl.setAttribute('width', '2'); hl.setAttribute('height', '10');
+      hl.setAttribute('fill', '#f0a0b0');
+      sym.appendChild(hl);
+      // Shadow bottom-right 4x4
+      const sh = document.createElementNS(NS, 'rect');
+      sh.setAttribute('x', '3'); sh.setAttribute('y', '3');
+      sh.setAttribute('width', '4'); sh.setAttribute('height', '4');
+      sh.setAttribute('fill', '#a05868');
+      sym.appendChild(sh);
+      // Shadow bottom edge
+      const sb = document.createElementNS(NS, 'rect');
+      sb.setAttribute('x', '-7'); sb.setAttribute('y', '5');
+      sb.setAttribute('width', '10'); sb.setAttribute('height', '2');
+      sb.setAttribute('fill', '#c07080');
+      sym.appendChild(sb);
+      // Shadow right edge
+      const sr = document.createElementNS(NS, 'rect');
+      sr.setAttribute('x', '5'); sr.setAttribute('y', '-7');
+      sr.setAttribute('width', '2'); sr.setAttribute('height', '10');
+      sr.setAttribute('fill', '#c07080');
+      sym.appendChild(sr);
+      // Center white 2x2
+      const dot = document.createElementNS(NS, 'rect');
+      dot.setAttribute('x', '-2'); dot.setAttribute('y', '-2');
+      dot.setAttribute('width', '4'); dot.setAttribute('height', '4');
+      dot.setAttribute('fill', '#ffffff');
+      sym.appendChild(dot);
+      return sym;
+    },
+    onTrigger: () => spawnCakeRain(),
+  });
+
+  // Reveal on phase-2 dialog trigger
+  document.addEventListener('chain-reveal', e => {
+    if (e.detail.phase === 'phase-2') cakeChain.reveal();
+  });
+  document.addEventListener('chain-reset', () => {
+    cakeChain.hide();
+    clearAllCakes();
+  });
+
+  // ── Funfetti Cake Pixel Art ───────────────────────────────────
+  const CAKE_W = 16, CAKE_H = 16, PIXEL_SIZE = 3;
+  const CAKE_PIXELS = [
+    [0,0,0,0,0,0,0,7,7,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,4,7,7,4,0,0,0,0,0,0],
+    [0,0,0,0,0,0,4,9,9,4,0,0,0,0,0,0],
+    [0,0,0,0,4,4,2,2,2,2,4,4,0,0,0,0],
+    [0,0,0,4,2,2,5,2,2,6,2,2,4,0,0,0],
+    [0,0,4,2,2,2,2,2,8,2,2,5,2,4,0,0],
+    [0,4,2,6,2,2,2,2,2,2,2,2,9,2,4,0],
+    [0,4,2,2,2,2,2,2,2,5,2,2,2,2,4,0],
+    [0,4,3,1,1,5,1,1,1,1,1,6,1,3,4,0],
+    [0,4,1,1,6,1,1,8,1,1,1,1,1,1,4,0],
+    [0,4,1,1,1,1,1,1,1,5,1,1,9,1,4,0],
+    [0,4,3,1,8,1,1,1,1,1,1,5,1,3,4,0],
+    [0,4,1,1,1,1,9,1,6,1,1,1,1,1,4,0],
+    [0,4,3,3,3,3,3,3,3,3,3,3,3,3,4,0],
+    [0,0,4,4,4,4,4,4,4,4,4,4,4,4,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ];
+  const CAKE_COLORS = {
+    0:'transparent',
+    1:'#fff5e6',  // light vanilla cake body
+    2:'#ffffff',  // white frosting
+    3:'#ffe8cc',  // cake shadow / darker vanilla
+    4:'#181818',  // outline
+    5:'#ff6b9d',  // pink sprinkle
+    6:'#4fc3f7',  // blue sprinkle
+    7:'#e03030',  // cherry red
+    8:'#7bed55',  // green sprinkle
+    9:'#ffeb3b',  // yellow sprinkle
+  };
+
+  function renderCakeCanvas(colorMap) {
+    const c = document.createElement('canvas');
+    c.width = CAKE_W * PIXEL_SIZE; c.height = CAKE_H * PIXEL_SIZE;
+    const ctx = c.getContext('2d');
+    for (let r = 0; r < CAKE_H; r++)
+      for (let col = 0; col < CAKE_W; col++) {
+        const v = CAKE_PIXELS[r][col]; if (v === 0) continue;
+        ctx.fillStyle = colorMap[v];
+        ctx.fillRect(col * PIXEL_SIZE, r * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+      }
+    return c.toDataURL();
+  }
+
+  const cakeDataURL = renderCakeCanvas(CAKE_COLORS);
+
+  // Pre-render 3 glitched variants with randomized colors
+  function randomHex() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+  }
+
+  const glitchVariants = [];
+  for (let g = 0; g < 3; g++) {
+    const glitchColors = {};
+    for (const key of Object.keys(CAKE_COLORS)) {
+      if (Number(key) === 0) { glitchColors[key] = 'transparent'; continue; }
+      glitchColors[key] = randomHex();
+    }
+    glitchVariants.push(renderCakeCanvas(glitchColors));
+  }
+
+  const cakeLayer = document.getElementById('cake-layer');
+  const cakes = [];
+  const floatingTexts = [];
+  const CW = CAKE_W * PIXEL_SIZE, CH = CAKE_H * PIXEL_SIZE;
+
+  // Track mouse position for hover-magnet
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('pointermove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+  function spawnCake(x, y) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;width:${CW}px;height:${CH}px;background-image:url(${cakeDataURL});background-size:contain;pointer-events:auto;cursor:pointer;image-rendering:pixelated;will-change:transform;`;
+    el.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
+    cakeLayer.appendChild(el);
+    const c = {
+      el, x, y,
+      baseX: x,
+      vy: 6 + Math.random() * 2.5,
+      alive: true,
+      hovered: false,
+      sineAmp: 20 + Math.random() * 30,
+      sineFreq: 0.5 + Math.random() * 1,
+      sineOffset: Math.random() * Math.PI * 2,
+      time: 0,
+    };
+    cakes.push(c);
+
+    el.addEventListener('mouseenter', () => { c.hovered = true; });
+    el.addEventListener('mouseleave', () => { c.hovered = false; });
+
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!c.alive) return;
+      c.alive = false;
+      dissolve(c);
+    });
+
+    return c;
+  }
+
+  // Sprinkle colors for dissolve particles
+  const SPRINKLE_COLORS = ['#ff6b9d', '#4fc3f7', '#7bed55', '#ffeb3b', '#fff5e6', '#ffffff'];
+
+  function dissolve(c) {
+    // Glitch flash: 3 color variants at 50ms intervals
+    let glitchIdx = 0;
+    const glitchInterval = setInterval(() => {
+      if (glitchIdx < 3) {
+        c.el.style.backgroundImage = `url(${glitchVariants[glitchIdx]})`;
+        glitchIdx++;
+      }
+    }, 50);
+
+    setTimeout(() => {
+      clearInterval(glitchInterval);
+
+      // Hide the cake element
+      c.el.style.visibility = 'hidden';
+
+      // Spawn pixel-scatter particles from the cake's position
+      const cx = c.x + CW / 2, cy = c.y + CH / 2;
+      const PARTICLE_COUNT = 12;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const p = document.createElement('div');
+        const size = 3 + Math.floor(Math.random() * 4);
+        const color = SPRINKLE_COLORS[Math.floor(Math.random() * SPRINKLE_COLORS.length)];
+        const angle = (Math.PI * 2 / PARTICLE_COUNT) * i + (Math.random() - 0.5) * 0.8;
+        const dist = 25 + Math.random() * 40;
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist - 15; // bias upward
+        p.style.cssText = `position:absolute;width:${size}px;height:${size}px;background:${color};left:${cx}px;top:${cy}px;pointer-events:none;will-change:transform,opacity;transition:transform 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease-out;image-rendering:pixelated;`;
+        cakeLayer.appendChild(p);
+        requestAnimationFrame(() => {
+          p.style.transform = `translate(${dx}px,${dy}px) scale(0.3)`;
+          p.style.opacity = '0';
+        });
+        setTimeout(() => p.remove(), 500);
+      }
+
+      // Floating text
+      const txt = document.createElement('div');
+      const cakeTexts = ['Pew', 'Bam', 'Pop', 'Pow'];
+      txt.textContent = cakeTexts[Math.floor(Math.random() * cakeTexts.length)];
+      txt.style.cssText = `position:absolute;left:${c.x}px;top:${c.y}px;font-family:'PPNeueBit',monospace;font-size:18px;color:#e890a0;pointer-events:none;white-space:nowrap;transition:transform 1.5s ease-out, opacity 1.5s ease-out;will-change:transform,opacity;`;
+      cakeLayer.appendChild(txt);
+      floatingTexts.push(txt);
+
+      txt.offsetWidth;
+      txt.style.transform = 'translateY(-30px)';
+      txt.style.opacity = '0';
+
+      setTimeout(() => {
+        txt.remove();
+        const idx = floatingTexts.indexOf(txt);
+        if (idx !== -1) floatingTexts.splice(idx, 1);
+      }, 1500);
+
+      setTimeout(() => {
+        c.el.remove();
+        const ci = cakes.indexOf(c);
+        if (ci !== -1) cakes.splice(ci, 1);
+      }, 500);
+    }, 200);
+  }
+
+  function spawnCakeRain() {
+    const count = 5;
+    const vw = window.innerWidth;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        spawnCake(Math.random() * (vw - CW), -CH - Math.random() * 200);
+        startCakeLoop();
+      }, i * 80);
+    }
+  }
+
+  function clearAllCakes() {
+    for (const c of cakes) c.el.remove();
+    cakes.length = 0;
+    for (const t of floatingTexts) t.remove();
+    floatingTexts.length = 0;
+  }
+
+  // ── Cake Physics ────────────────────────────────────────────────
+  let cakeAnimId = null;
+
+  function cakeTick() {
+    for (let i = cakes.length - 1; i >= 0; i--) {
+      const c = cakes[i];
+      if (!c.alive) continue;
+
+      // Slow down when hovered, normal speed otherwise
+      c.vy *= c.hovered ? 0.92 : 0.992;
+      c.vy += 0.002;
+
+      c.time += 0.016;
+      c.y += c.vy;
+      c.x = c.baseX + Math.sin(c.time * c.sineFreq + c.sineOffset) * c.sineAmp;
+
+      c.el.style.transform = `translate(${Math.round(c.x)}px,${Math.round(c.y)}px)`;
+
+      // Remove when fully off-screen
+      if (c.y > window.innerHeight + 50) {
+        c.el.remove();
+        cakes.splice(i, 1);
+      }
+    }
+
+    if (cakes.length > 0) {
+      cakeAnimId = requestAnimationFrame(cakeTick);
+    } else {
+      cakeAnimId = null;
+    }
+  }
+
+  function startCakeLoop() { if (!cakeAnimId) cakeAnimId = requestAnimationFrame(cakeTick); }
+
+  // Expose for portal reset
+  window.__cakeEffect = {
+    clear() { clearAllCakes(); }
+  };
+</script>

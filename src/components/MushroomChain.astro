@@ -1,0 +1,245 @@
+<!-- Mushroom pull-chain — rains pixelated mushrooms, grows face -->
+<div id="mush-chain-root" class="fixed z-50 flex flex-col items-center"
+  style="top: -10px; left: calc(50% + min(120px, 17.5vw)); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  <svg id="mush-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
+    style="overflow: visible; display: block; flex-shrink: 0;"
+    shape-rendering="crispEdges">
+  </svg>
+  <div id="mush-handle-hit" style="position:absolute; width:44px; height:44px; border-radius:50%; pointer-events:auto; cursor: url('/images/cursor-grab.svg') 14 14, grab; transform: translate(-50%, -50%); touch-action: none;"></div>
+</div>
+
+<div id="mushroom-layer" style="position:fixed; inset:0; pointer-events:none; z-index:40; overflow:hidden;"></div>
+
+<script>
+  import { createChain } from '../scripts/chain-physics.js';
+
+  const mushChain = createChain({
+    svgId: 'mush-chain-svg',
+    handleHitId: 'mush-handle-hit',
+    rootId: 'mush-chain-root',
+    cursorLabel: 'Do not pull',
+    trigger: 30,
+    handleSymbolId: 'mush-handle-sym',
+    buildHandleSymbol(NS) {
+      const sym = document.createElementNS(NS, 'symbol');
+      const hit = document.createElementNS(NS, 'circle');
+      hit.setAttribute('r', '18'); hit.setAttribute('fill', 'transparent');
+      sym.appendChild(hit);
+      const base = document.createElementNS(NS, 'rect');
+      base.setAttribute('x', '-7'); base.setAttribute('y', '-7');
+      base.setAttribute('width', '14'); base.setAttribute('height', '14');
+      base.setAttribute('fill', '#e03030');
+      sym.appendChild(base);
+      const hi = document.createElementNS(NS, 'rect');
+      hi.setAttribute('x', '-7'); hi.setAttribute('y', '-7');
+      hi.setAttribute('width', '4'); hi.setAttribute('height', '4');
+      hi.setAttribute('fill', '#ff6060');
+      sym.appendChild(hi);
+      const ht = document.createElementNS(NS, 'rect');
+      ht.setAttribute('x', '-3'); ht.setAttribute('y', '-7');
+      ht.setAttribute('width', '10'); ht.setAttribute('height', '2');
+      ht.setAttribute('fill', '#f04040');
+      sym.appendChild(ht);
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', '-7'); hl.setAttribute('y', '-3');
+      hl.setAttribute('width', '2'); hl.setAttribute('height', '10');
+      hl.setAttribute('fill', '#f04040');
+      sym.appendChild(hl);
+      const sh = document.createElementNS(NS, 'rect');
+      sh.setAttribute('x', '3'); sh.setAttribute('y', '3');
+      sh.setAttribute('width', '4'); sh.setAttribute('height', '4');
+      sh.setAttribute('fill', '#901818');
+      sym.appendChild(sh);
+      const sb = document.createElementNS(NS, 'rect');
+      sb.setAttribute('x', '-7'); sb.setAttribute('y', '5');
+      sb.setAttribute('width', '10'); sb.setAttribute('height', '2');
+      sb.setAttribute('fill', '#b02020');
+      sym.appendChild(sb);
+      const sr = document.createElementNS(NS, 'rect');
+      sr.setAttribute('x', '5'); sr.setAttribute('y', '-7');
+      sr.setAttribute('width', '2'); sr.setAttribute('height', '10');
+      sr.setAttribute('fill', '#b02020');
+      sym.appendChild(sr);
+      const dot = document.createElementNS(NS, 'rect');
+      dot.setAttribute('x', '-2'); dot.setAttribute('y', '-2');
+      dot.setAttribute('width', '4'); dot.setAttribute('height', '4');
+      dot.setAttribute('fill', '#ffffff');
+      sym.appendChild(dot);
+      return sym;
+    },
+    onTrigger: () => spawnMushroomRain(),
+  });
+
+  // Reveal on phase-1 dialog trigger
+  document.addEventListener('chain-reveal', e => {
+    if (e.detail.phase === 'phase-1') setTimeout(() => mushChain.reveal(), 300);
+  });
+  document.addEventListener('chain-reset', () => {
+    mushChain.hide();
+    clearAllMushrooms();
+    faceScale = 1;
+    const container = document.querySelector('.face-container');
+    if (container) {
+      container.style.transition = '';
+      container.style.transform = 'translateX(-50%)';
+      container.style.transformOrigin = '';
+      container.style.filter = '';
+    }
+  });
+
+  // ── Mushroom Sprite ──────────────────────────────────────────
+  const MW = 48, MH = 48;
+
+  const mushLayer = document.getElementById('mushroom-layer');
+  const mushrooms = [];
+
+  function spawnMushroom(x, y) {
+    const el = document.createElement('div');
+    el.className = 'mushroom-item';
+    el.style.cssText = `position:absolute;width:${MW}px;height:${MH}px;background-image:url(/images/mushroom.svg);background-size:contain;background-repeat:no-repeat;pointer-events:auto;cursor:url('/images/cursor-grab.svg') 14 14,grab;image-rendering:pixelated;will-change:transform;`;
+    el.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
+    mushLayer.appendChild(el);
+    const m = { el, x, y, vx:(Math.random()-0.5)*3, vy:Math.random()*2+1, grounded:false, dirX:Math.random()<0.5?1:-1, dragging:false, dragOffX:0, dragOffY:0 };
+    mushrooms.push(m);
+    setupMushroomDrag(m);
+    return m;
+  }
+
+  function spawnMushroomRain() {
+    const count = 3 + Math.floor(Math.random() * 2);
+    const vw = window.innerWidth;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        spawnMushroom(Math.random() * (vw - MW), -MH - Math.random() * 200);
+        startMushroomLoop();
+      }, i * 80);
+    }
+  }
+
+  function clearAllMushrooms() {
+    for (const m of mushrooms) m.el.remove();
+    mushrooms.length = 0;
+  }
+
+  // ── Mushroom Physics ───────────────────────────────────────────
+  let mushAnimId = null;
+  const MUSH_GRAVITY = 0.3, SLIDE_SPEED = 1.2;
+  const FLOOR_Y = () => window.innerHeight - MH;
+
+  function mushTick() {
+    const floor = FLOOR_Y(), vw = window.innerWidth;
+    const faceImg = document.querySelector('.face-container .peek-img');
+    const faceRect = faceImg ? faceImg.getBoundingClientRect() : null;
+
+    for (let i = mushrooms.length - 1; i >= 0; i--) {
+      const m = mushrooms[i];
+      if (m.dragging) continue;
+
+      if (!m.grounded) {
+        m.vy += MUSH_GRAVITY; m.x += m.vx; m.y += m.vy;
+        if (m.y >= floor) { m.y = floor; m.vy = 0; m.vx = 0; m.grounded = true; }
+      } else {
+        m.x += m.dirX * SLIDE_SPEED;
+        if (m.x <= 0) { m.x = 0; m.dirX = 1; }
+        if (m.x >= vw - MW) { m.x = vw - MW; m.dirX = -1; }
+      }
+
+      m.el.style.transform = `translate(${Math.round(m.x)}px,${Math.round(m.y)}px)`;
+
+      // Intersection with face image (not bounding container)
+      if (faceRect) {
+        const mx = m.x + MW / 2, my = m.y + MH / 2;
+        // Tighter check: horizontal center must be within img width,
+        // vertical must be within visible img area (top portion is cropped by overflow)
+        if (mx >= faceRect.left && mx <= faceRect.right && my >= faceRect.top && my <= faceRect.bottom) {
+          consumeMushroom(m, i);
+        }
+      }
+    }
+
+    if (mushrooms.length > 0) {
+      mushAnimId = requestAnimationFrame(mushTick);
+    } else {
+      mushAnimId = null;
+    }
+  }
+
+  function startMushroomLoop() { if (!mushAnimId) mushAnimId = requestAnimationFrame(mushTick); }
+
+  function consumeMushroom(m, idx) {
+    growFace();
+    m.el.style.transition = 'opacity 0.3s, transform 0.3s';
+    m.el.style.opacity = '0';
+    m.el.style.transform += ' scale(1.5)';
+    setTimeout(() => m.el.remove(), 300);
+    mushrooms.splice(idx, 1);
+  }
+
+  // ── Mushroom Drag ──────────────────────────────────────────────
+  function setupMushroomDrag(m) {
+    m.el.addEventListener('pointerdown', e => {
+      e.preventDefault(); e.stopPropagation();
+      m.dragging = true; m.grounded = false;
+      m.dragOffX = e.clientX - m.x; m.dragOffY = e.clientY - m.y;
+      m.el.setPointerCapture(e.pointerId);
+      m.el.style.cursor = "url('/images/cursor-grabbing.svg') 14 14, grabbing";
+      m.el.style.zIndex = '100';
+      document.body.style.cursor = "url('/images/cursor-grabbing.svg') 14 14, grabbing";
+    });
+    m.el.addEventListener('pointermove', e => {
+      if (!m.dragging) return;
+      m.x = e.clientX - m.dragOffX; m.y = e.clientY - m.dragOffY;
+      m.el.style.transform = `translate(${Math.round(m.x)}px,${Math.round(m.y)}px)`;
+    });
+    m.el.addEventListener('pointerup', () => {
+      if (!m.dragging) return;
+      m.dragging = false;
+      m.el.style.cursor = "url('/images/cursor-grab.svg') 14 14, grab";
+      m.el.style.zIndex = ''; document.body.style.cursor = '';
+      m.vy = 0; m.vx = 0;
+      startMushroomLoop();
+    });
+  }
+
+  // ── Face Growth (20% per mushroom) ─────────────────────────────
+  let faceScale = 1;
+  const GROW_NOTES = [523.25, 659.25, 783.99, 1046.50];
+
+  function playGrowSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      GROW_NOTES.forEach((freq, i) => {
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.type = 'square'; osc.frequency.value = freq;
+        gain.gain.value = 0.08;
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.15);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + i * 0.08);
+        osc.stop(ctx.currentTime + i * 0.08 + 0.2);
+      });
+    } catch(e) {}
+  }
+
+  function growFace() {
+    faceScale += 0.20;
+    const container = document.querySelector('.face-container');
+    if (container) {
+      container.style.transformOrigin = 'center bottom';
+      container.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      container.style.transform = `translateX(-50%) scale(${faceScale})`;
+      container.style.filter = 'brightness(1.3)';
+      setTimeout(() => { container.style.filter = ''; }, 200);
+    }
+    playGrowSound();
+  }
+
+  // Expose for portal reset
+  window.__mushEffect = {
+    resetFaceScale() {
+      faceScale = 1;
+      const container = document.querySelector('.face-container');
+      if (container) { container.style.transition = ''; container.style.transform = 'translateX(-50%)'; container.style.transformOrigin = ''; }
+    },
+    clear() { clearAllMushrooms(); }
+  };
+</script>

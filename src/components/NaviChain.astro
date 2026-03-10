@@ -1,0 +1,303 @@
+<!-- Navi pull-chain — spawns annoying fairies that follow the cursor -->
+<div id="navi-chain-root" class="fixed z-50 flex flex-col items-center"
+  style="top: -10px; left: calc(50% - min(120px, 17.5vw)); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  <svg id="navi-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
+    style="overflow: visible; display: block; flex-shrink: 0;"
+    shape-rendering="crispEdges">
+  </svg>
+  <div id="navi-handle-hit" style="position:absolute; width:44px; height:44px; border-radius:50%; pointer-events:auto; cursor: url('/images/cursor-grab.svg') 14 14, grab; transform: translate(-50%, -50%); touch-action: none;"></div>
+</div>
+
+<div id="fairy-layer" style="position:fixed; inset:0; pointer-events:none; z-index:45; overflow:hidden;"></div>
+
+<script>
+  import { createChain } from '../scripts/chain-physics.js';
+  import { hasTouchScreen } from '../scripts/touch-screen.js';
+
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const naviChain = createChain({
+    svgId: 'navi-chain-svg',
+    handleHitId: 'navi-handle-hit',
+    rootId: 'navi-chain-root',
+    cursorLabel: 'Pull this for sure',
+    trigger: 30,
+    handleSymbolId: 'navi-handle-sym',
+    buildHandleSymbol(NS) {
+      const sym = document.createElementNS(NS, 'symbol');
+      // Transparent hit area
+      const hit = document.createElementNS(NS, 'circle');
+      hit.setAttribute('r', '18'); hit.setAttribute('fill', 'transparent');
+      sym.appendChild(hit);
+      // Base blue
+      const base = document.createElementNS(NS, 'rect');
+      base.setAttribute('x', '-7'); base.setAttribute('y', '-7');
+      base.setAttribute('width', '14'); base.setAttribute('height', '14');
+      base.setAttribute('fill', '#4080e0');
+      sym.appendChild(base);
+      // Highlight top-left 4x4
+      const hi = document.createElementNS(NS, 'rect');
+      hi.setAttribute('x', '-7'); hi.setAttribute('y', '-7');
+      hi.setAttribute('width', '4'); hi.setAttribute('height', '4');
+      hi.setAttribute('fill', '#80c0ff');
+      sym.appendChild(hi);
+      // Highlight top edge
+      const ht = document.createElementNS(NS, 'rect');
+      ht.setAttribute('x', '-3'); ht.setAttribute('y', '-7');
+      ht.setAttribute('width', '10'); ht.setAttribute('height', '2');
+      ht.setAttribute('fill', '#60a0f0');
+      sym.appendChild(ht);
+      // Highlight left edge
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', '-7'); hl.setAttribute('y', '-3');
+      hl.setAttribute('width', '2'); hl.setAttribute('height', '10');
+      hl.setAttribute('fill', '#60a0f0');
+      sym.appendChild(hl);
+      // Shadow bottom-right 4x4
+      const sh = document.createElementNS(NS, 'rect');
+      sh.setAttribute('x', '3'); sh.setAttribute('y', '3');
+      sh.setAttribute('width', '4'); sh.setAttribute('height', '4');
+      sh.setAttribute('fill', '#204090');
+      sym.appendChild(sh);
+      // Shadow bottom edge
+      const sb = document.createElementNS(NS, 'rect');
+      sb.setAttribute('x', '-7'); sb.setAttribute('y', '5');
+      sb.setAttribute('width', '10'); sb.setAttribute('height', '2');
+      sb.setAttribute('fill', '#3060b0');
+      sym.appendChild(sb);
+      // Shadow right edge
+      const sr = document.createElementNS(NS, 'rect');
+      sr.setAttribute('x', '5'); sr.setAttribute('y', '-7');
+      sr.setAttribute('width', '2'); sr.setAttribute('height', '10');
+      sr.setAttribute('fill', '#3060b0');
+      sym.appendChild(sr);
+      // Center white dot
+      const dot = document.createElementNS(NS, 'rect');
+      dot.setAttribute('x', '-2'); dot.setAttribute('y', '-2');
+      dot.setAttribute('width', '4'); dot.setAttribute('height', '4');
+      dot.setAttribute('fill', '#ffffff');
+      sym.appendChild(dot);
+      return sym;
+    },
+    onTrigger: () => spawnNaviFairies(),
+  });
+
+  // Reveal on phase-2 dialog trigger
+  document.addEventListener('chain-reveal', e => {
+    if (e.detail.phase === 'phase-navi') setTimeout(() => naviChain.reveal(), 300);
+  });
+  document.addEventListener('chain-reset', () => {
+    naviChain.hide();
+    clearAllFairies();
+  });
+
+  // ── Fairy Pixel Art ────────────────────────────────────────────
+  const FAIRY_W = 12, FAIRY_H = 12, PIXEL_SIZE = 3;
+  const FAIRY_PIXELS = [
+    [0,0,0,4,4,0,0,4,4,0,0,0],
+    [0,0,4,1,1,4,4,1,1,4,0,0],
+    [0,0,0,4,4,1,1,4,4,0,0,0],
+    [0,0,0,0,4,1,1,4,0,0,0,0],
+    [0,0,0,4,1,2,2,1,4,0,0,0],
+    [0,0,4,1,2,2,2,2,1,4,0,0],
+    [0,0,4,1,2,2,2,2,1,4,0,0],
+    [0,0,0,4,1,2,2,1,4,0,0,0],
+    [0,0,0,0,4,1,1,4,0,0,0,0],
+    [0,0,0,0,0,4,4,0,0,0,0,0],
+    [0,0,0,0,0,4,4,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  ];
+  const FAIRY_COLORS = { 0:'transparent', 1:'#80c0ff', 2:'#ffffff', 3:'#4080e0', 4:'#c0e8ff' };
+
+  function createFairyCanvas() {
+    const c = document.createElement('canvas');
+    c.width = FAIRY_W * PIXEL_SIZE; c.height = FAIRY_H * PIXEL_SIZE;
+    const ctx = c.getContext('2d');
+    for (let r = 0; r < FAIRY_H; r++)
+      for (let col = 0; col < FAIRY_W; col++) {
+        const v = FAIRY_PIXELS[r][col]; if (v === 0) continue;
+        ctx.fillStyle = FAIRY_COLORS[v];
+        ctx.fillRect(col * PIXEL_SIZE, r * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+      }
+    return c;
+  }
+  const fairyDataURL = createFairyCanvas().toDataURL();
+
+  const fairyLayer = document.getElementById('fairy-layer');
+  const fairies = [];
+  const FW = FAIRY_W * PIXEL_SIZE, FH = FAIRY_H * PIXEL_SIZE;
+  let fairyAnimId = null;
+
+  // ── Target tracking ─────────────────────────────────────────
+  let cursorX = window.innerWidth / 2;
+  let cursorY = window.innerHeight / 2;
+
+  if (!hasTouchScreen) {
+    document.addEventListener('mousemove', e => {
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+    });
+  }
+
+  // On mobile: get face center as anchor point for orbiting
+  function getFaceCenter() {
+    const face = document.querySelector('.face-container');
+    if (face) {
+      const r = face.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+    return { x: window.innerWidth / 2, y: window.innerHeight / 3 };
+  }
+
+  // ── Speech bubble phrases ────────────────────────────────────
+  const PHRASES = ['Hey! Listen!', 'Listen!', 'LISTEN!', 'Are you listening?', 'Listen to me!', "I don't think they're listening", 'Hey listen!', 'Please listen!', 'You never listen!', 'Just listen for once!'];
+
+  function showBubble(fairy) {
+    if (fairy.bubble) return;
+    const bubble = document.createElement('div');
+    bubble.textContent = PHRASES[Math.floor(Math.random() * PHRASES.length)];
+    bubble.style.cssText = `font-family:'PPNeueBit',monospace;font-size:16px;font-weight:700;color:#4080e0;white-space:nowrap;position:absolute;pointer-events:none;opacity:0;transition:opacity 200ms;text-shadow:0 0 4px rgba(128,192,255,0.8);`;
+    fairyLayer.appendChild(bubble);
+    fairy.bubble = bubble;
+    fairy.bubbleTime = performance.now();
+    fairy.bubblePhase = 'in'; // in -> show -> out -> done
+
+    requestAnimationFrame(() => { bubble.style.opacity = '1'; });
+  }
+
+  function updateBubble(fairy, now) {
+    if (!fairy.bubble) return;
+    const elapsed = now - fairy.bubbleTime;
+
+    if (fairy.bubblePhase === 'in' && elapsed >= 200) {
+      fairy.bubblePhase = 'show';
+      fairy.bubbleTime = now;
+    } else if (fairy.bubblePhase === 'show' && elapsed >= 1500) {
+      fairy.bubblePhase = 'out';
+      fairy.bubbleTime = now;
+      fairy.bubble.style.opacity = '0';
+    } else if (fairy.bubblePhase === 'out' && elapsed >= 200) {
+      fairy.bubble.remove();
+      fairy.bubble = null;
+      fairy.bubblePhase = null;
+      // Schedule next bubble
+      fairy.nextBubble = now + 2000 + Math.random() * 2000;
+    }
+
+    // Position bubble above fairy
+    if (fairy.bubble) {
+      fairy.bubble.style.left = `${fairy.x + FW / 2 - 20}px`;
+      fairy.bubble.style.top = `${fairy.y - 20}px`;
+    }
+  }
+
+  // ── Fairy spawning ───────────────────────────────────────────
+  function spawnFairy(lerpRate, idx, count) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;width:${FW}px;height:${FH}px;background-image:url(${fairyDataURL});background-size:contain;pointer-events:none;image-rendering:pixelated;will-change:transform;`;
+    fairyLayer.appendChild(el);
+
+    const now = performance.now();
+    const startX = hasTouchScreen ? getFaceCenter().x : cursorX;
+    const startY = hasTouchScreen ? getFaceCenter().y : cursorY;
+    // Each fairy orbits at its own radius, speed, and phase — figure-eight via different x/y freq ratios
+    const dir = idx % 2 === 0 ? 1 : -1;
+    const fairy = {
+      el,
+      x: startX - FW / 2 + (Math.random() - 0.5) * 100,
+      y: startY - FH / 2 + (Math.random() - 0.5) * 100,
+      // Smooth center tracking
+      centerX: startX,
+      centerY: startY,
+      centerLerp: 0.03 + lerpRate * 0.5,
+      // Orbit params (used on both desktop and mobile)
+      orbitRadius: 40 + idx * 25 + Math.random() * 20,
+      orbitSpeed: (1.2 + idx * 0.3 + Math.random() * 0.4) * dir,
+      orbitAngle: (Math.PI * 2 / count) * idx,
+      // Figure-eight: y frequency is 2x for lissajous, with per-fairy variation
+      yFreqRatio: idx % 2 === 0 ? 2.0 : 1.5,
+      orbitTilt: 0.5 + Math.random() * 0.3,
+      offset: Math.random() * Math.PI * 2,
+      bubble: null,
+      bubbleTime: 0,
+      bubblePhase: null,
+      nextBubble: now + 1000 + Math.random() * 2000,
+    };
+    fairies.push(fairy);
+    return fairy;
+  }
+
+  function spawnNaviFairies() {
+    const count = 3 + Math.floor(Math.random() * 2); // 3-4
+    const minLerp = 0.03, maxLerp = 0.08;
+    for (let i = 0; i < count; i++) {
+      const lerpRate = count === 1
+        ? (minLerp + maxLerp) / 2
+        : minLerp + (maxLerp - minLerp) * (i / (count - 1));
+      spawnFairy(lerpRate, i, count);
+    }
+    startFairyLoop();
+  }
+
+  // ── Fairy animation loop ─────────────────────────────────────
+  function fairyTick(now) {
+    for (const fairy of fairies) {
+      // Smoothly track the anchor point (cursor on desktop, face on mobile)
+      const anchorX = hasTouchScreen ? getFaceCenter().x : cursorX;
+      const anchorY = hasTouchScreen ? getFaceCenter().y : cursorY;
+      fairy.centerX += (anchorX - fairy.centerX) * fairy.centerLerp;
+      fairy.centerY += (anchorY - fairy.centerY) * fairy.centerLerp;
+
+      // Advance orbit angle
+      fairy.orbitAngle += fairy.orbitSpeed * 0.016;
+
+      // Lissajous figure-eight: x uses base freq, y uses yFreqRatio * base freq
+      const wobble = Math.sin(now * 0.0015 + fairy.offset) * 10;
+      const r = fairy.orbitRadius + wobble;
+      const targetX = fairy.centerX + Math.cos(fairy.orbitAngle) * r - FW / 2;
+      const targetY = fairy.centerY + Math.sin(fairy.orbitAngle * fairy.yFreqRatio) * r * fairy.orbitTilt - FH / 2;
+
+      fairy.x += (targetX - fairy.x) * 0.08;
+      fairy.y += (targetY - fairy.y) * 0.08;
+
+      // Vertical bob
+      const bob = Math.sin(now * 0.009 + fairy.offset) * 6;
+
+      fairy.el.style.transform = `translate(${Math.round(fairy.x)}px,${Math.round(fairy.y + bob)}px)`;
+
+      // Speech bubbles
+      if (!fairy.bubble && fairy.nextBubble && now >= fairy.nextBubble) {
+        showBubble(fairy);
+      }
+      updateBubble(fairy, now);
+    }
+
+    if (fairies.length > 0) {
+      fairyAnimId = requestAnimationFrame(fairyTick);
+    } else {
+      fairyAnimId = null;
+    }
+  }
+
+  function startFairyLoop() {
+    if (!fairyAnimId) fairyAnimId = requestAnimationFrame(fairyTick);
+  }
+
+  // ── Cleanup ──────────────────────────────────────────────────
+  function clearAllFairies() {
+    for (const fairy of fairies) {
+      fairy.el.remove();
+      if (fairy.bubble) fairy.bubble.remove();
+    }
+    fairies.length = 0;
+    if (fairyAnimId) {
+      cancelAnimationFrame(fairyAnimId);
+      fairyAnimId = null;
+    }
+  }
+
+  // Expose for portal reset
+  window.__naviEffect = {
+    clear() { clearAllFairies(); }
+  };
+</script>
