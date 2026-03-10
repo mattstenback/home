@@ -111,7 +111,7 @@ body::after { display: none; }
 
   /* Peek effect */
   .peek-img {
-    transform: translateY(35%);
+    transform: translateY(32%);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .peek-wrap:hover .peek-img,
@@ -128,7 +128,7 @@ body::after { display: none; }
   }
   .peek-img.defeated.peeking,
   .face-wrap:hover .peek-img.defeated.peeking {
-    transform: translateY(35%);
+    transform: translateY(32%);
     transition: transform 0.15s ease-out;
   }
 
@@ -307,6 +307,7 @@ body::after { display: none; }
     line-height: 1.2;
     text-transform: none;
     white-space: nowrap;
+    min-height: 44px;
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;

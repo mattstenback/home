@@ -1,0 +1,111 @@
+---
+---
+
+<!-- Reset pull-chain — resets all effects and dialog -->
+<div id="reset-chain-root" class="fixed z-50 flex flex-col items-center"
+  style="top: -10px; left: calc(50% + 360px); width: 20px; user-select: none; -webkit-user-select: none; visibility: hidden;">
+  <svg id="reset-chain-svg" width="20" xmlns="http://www.w3.org/2000/svg"
+    style="overflow: visible; display: block; flex-shrink: 0;"
+    shape-rendering="crispEdges">
+  </svg>
+  <div id="reset-handle-hit" style="position:absolute; width:44px; height:44px; border-radius:50%; pointer-events:auto; cursor: url('/images/cursor-grab.svg') 14 14, grab; transform: translate(-50%, -50%); touch-action: none;"></div>
+</div>
+
+<script>
+  import { createChain } from '../scripts/chain-physics.js';
+
+  const resetChain = createChain({
+    svgId: 'reset-chain-svg',
+    handleHitId: 'reset-handle-hit',
+    rootId: 'reset-chain-root',
+    cursorLabel: 'Admit defeat',
+    trigger: 30,
+    handleSymbolId: 'reset-handle-sym',
+    buildHandleSymbol(NS) {
+      const sym = document.createElementNS(NS, 'symbol');
+      const hit = document.createElementNS(NS, 'circle');
+      hit.setAttribute('r', '18'); hit.setAttribute('fill', 'transparent');
+      sym.appendChild(hit);
+      // Base orange
+      const base = document.createElementNS(NS, 'rect');
+      base.setAttribute('x', '-7'); base.setAttribute('y', '-7');
+      base.setAttribute('width', '14'); base.setAttribute('height', '14');
+      base.setAttribute('fill', '#e08030');
+      sym.appendChild(base);
+      // Highlight top-left
+      const hi = document.createElementNS(NS, 'rect');
+      hi.setAttribute('x', '-7'); hi.setAttribute('y', '-7');
+      hi.setAttribute('width', '4'); hi.setAttribute('height', '4');
+      hi.setAttribute('fill', '#ffa050');
+      sym.appendChild(hi);
+      // Highlight top edge
+      const ht = document.createElementNS(NS, 'rect');
+      ht.setAttribute('x', '-3'); ht.setAttribute('y', '-7');
+      ht.setAttribute('width', '10'); ht.setAttribute('height', '2');
+      ht.setAttribute('fill', '#f09040');
+      sym.appendChild(ht);
+      // Highlight left edge
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', '-7'); hl.setAttribute('y', '-3');
+      hl.setAttribute('width', '2'); hl.setAttribute('height', '10');
+      hl.setAttribute('fill', '#f09040');
+      sym.appendChild(hl);
+      // Shadow bottom-right
+      const sh = document.createElementNS(NS, 'rect');
+      sh.setAttribute('x', '3'); sh.setAttribute('y', '3');
+      sh.setAttribute('width', '4'); sh.setAttribute('height', '4');
+      sh.setAttribute('fill', '#904810');
+      sym.appendChild(sh);
+      // Shadow bottom edge
+      const sb = document.createElementNS(NS, 'rect');
+      sb.setAttribute('x', '-7'); sb.setAttribute('y', '5');
+      sb.setAttribute('width', '10'); sb.setAttribute('height', '2');
+      sb.setAttribute('fill', '#b06020');
+      sym.appendChild(sb);
+      // Shadow right edge
+      const sr = document.createElementNS(NS, 'rect');
+      sr.setAttribute('x', '5'); sr.setAttribute('y', '-7');
+      sr.setAttribute('width', '2'); sr.setAttribute('height', '10');
+      sr.setAttribute('fill', '#b06020');
+      sym.appendChild(sr);
+      // Center cross (reset symbol)
+      const crossH = document.createElementNS(NS, 'rect');
+      crossH.setAttribute('x', '-4'); crossH.setAttribute('y', '-1');
+      crossH.setAttribute('width', '8'); crossH.setAttribute('height', '2');
+      crossH.setAttribute('fill', '#ffffff');
+      sym.appendChild(crossH);
+      const crossV = document.createElementNS(NS, 'rect');
+      crossV.setAttribute('x', '-1'); crossV.setAttribute('y', '-4');
+      crossV.setAttribute('width', '2'); crossV.setAttribute('height', '8');
+      crossV.setAttribute('fill', '#ffffff');
+      sym.appendChild(crossV);
+      return sym;
+    },
+    onTrigger: () => doReset(),
+  });
+
+  function doReset() {
+    // Dispatch reset event for all chains
+    document.dispatchEvent(new CustomEvent('chain-reset'));
+    // Reset dialog
+    (window as any).__dialogState?.reset();
+    // Reset face scale
+    (window as any).__mushEffect?.resetFaceScale();
+    (window as any).__mushEffect?.clear();
+    // Clear effects
+    (window as any).__starEffect?.clear();
+    (window as any).__cakeEffect?.clear();
+    (window as any).__naviEffect?.clear();
+    // Remove star mode
+    document.documentElement.classList.remove('star-mode');
+  }
+
+  // Reveal on phase-3 dialog trigger
+  document.addEventListener('chain-reveal', e => {
+    if ((e as CustomEvent).detail?.phase === 'phase-3') resetChain.reveal();
+  });
+
+  document.addEventListener('chain-reset', () => {
+    resetChain.hide();
+  });
+</script>

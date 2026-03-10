@@ -10,7 +10,8 @@
         <!-- Face overlapping between MATT and STENBACK -->
         <div class="face-container">
           <div class="face-wrap cursor-default relative">
-            <div class="absolute bottom-0 inset-x-[-5%] h-[1.5px] z-10 shelf-line intro-shelf" style="opacity:0"></div>
+            <div class="absolute bottom-0 inset-x-[-5%] h-[5px] z-10 shelf-mask intro-shelf" style="opacity:0"></div>
+            <div class="absolute bottom-[4px] inset-x-[-5%] h-[1.5px] z-10 shelf-line intro-shelf" style="opacity:0"></div>
             <img
               src="/images/me.png"
               alt="Matt Stenback"
@@ -56,6 +57,8 @@
 </div>
 
 <script>
+  import { hasTouchScreen } from '../scripts/touch-screen.js';
+
   // ── Scripted NPC greeting sequence ──────────────────────────────
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -86,47 +89,84 @@
     "You've seen them all now",
     "There's no secret ending",
     '...or is there?',
-    'No. Really. There isn\'t. You can stop.',
+    "No, really... whoops, ignore that!",               // PHASE 1 trigger
     'You could just read the source code',
-    "I'm not hiding anything, I promise",
-    'Alright... If you insist...',
+    "I'm not hiding anything else, I promise",          // PHASE navi trigger
+    'Alright... If you insist...',                      // PHASE 2 trigger
+    "Look at all the fun we're having",
     '..............................',
-    'Fine. You win.',
-    'I hope you\'re happy',
+    'You win, OK?',
+    "I hope you're happy",
     '...',
     '*slow clap*',
-    '[Matt.exe has stopped responding]',
+    '[Matt.exe has stopped responding]',                // PHASE 3 trigger
   ];
+
+  // Phase triggers: seqIndex value AFTER increment → phase name
+  // fixed[21] = "whoops, ignore that!" → seq index 3+21=24, after increment = 25
+  // fixed[23] = "not hiding anything else" → seq index 3+23=26, after increment = 27
+  // fixed[24] = "Alright... If you insist..." → seq index 3+24=27, after increment = 28
+  // fixed[32] = "[Matt.exe has stopped responding]" → seq index 3+32=35, after increment = 36
+  const PHASE_TRIGGERS = { 25: 'phase-1', 27: 'phase-navi', 28: 'phase-2' };
 
   let sequence = [...shuffle([...hellos]), ...fixed];
   let seqIndex = 0;
   const balloon = document.getElementById('speech-balloon');
   const faceWrap = document.querySelector('.face-container .face-wrap');
   let typeTimer = null;
-  if (faceWrap && balloon) {
-    faceWrap.addEventListener('mouseenter', () => {
-      if (typeTimer) clearInterval(typeTimer);
-      const text = sequence[Math.min(seqIndex, sequence.length - 1)];
-      if (seqIndex < sequence.length) seqIndex++;
-      if (seqIndex >= sequence.length) {
-        const img = faceWrap.querySelector('.peek-img');
-        if (img) img.classList.add('defeated');
+  function advanceDialog() {
+    if (typeTimer) clearInterval(typeTimer);
+    const text = sequence[Math.min(seqIndex, sequence.length - 1)];
+    if (seqIndex < sequence.length) seqIndex++;
+    if (seqIndex >= sequence.length) {
+      const img = faceWrap.querySelector('.peek-img');
+      if (img) img.classList.add('defeated');
+    }
+    // Fire chain reveal events at narrative trigger points (200ms delay so user reads the line first)
+    if (PHASE_TRIGGERS[seqIndex]) {
+      const phase = PHASE_TRIGGERS[seqIndex];
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('chain-reveal', {
+          detail: { phase }
+        }));
+      }, 200);
+    }
+    balloon.style.width = '';
+    balloon.textContent = text;
+    const fullWidth = balloon.offsetWidth;
+    balloon.style.width = fullWidth + 'px';
+    balloon.textContent = '';
+    let i = 0;
+    typeTimer = setInterval(() => {
+      balloon.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(typeTimer);
+        balloon.style.width = '';
       }
-      balloon.style.width = '';
-      balloon.textContent = text;
-      const fullWidth = balloon.offsetWidth;
-      balloon.style.width = fullWidth + 'px';
-      balloon.textContent = '';
-      let i = 0;
-      typeTimer = setInterval(() => {
-        balloon.textContent = text.slice(0, ++i);
-        if (i >= text.length) {
-          clearInterval(typeTimer);
-          balloon.style.width = '';
-        }
-      }, 20);
-    });
+    }, 20);
   }
+
+  if (faceWrap && balloon) {
+    if (hasTouchScreen) {
+      faceWrap.addEventListener('click', advanceDialog);
+    } else {
+      // Hover triggers first line; click advances while hovered
+      faceWrap.addEventListener('mouseenter', advanceDialog);
+      faceWrap.addEventListener('click', advanceDialog);
+    }
+  }
+
+  // Expose dialog state for portal reset
+  window.__dialogState = {
+    reset() {
+      seqIndex = 0;
+      sequence = [...shuffle([...hellos]), ...fixed];
+      if (balloon) { balloon.textContent = ''; balloon.style.width = ''; }
+      const img = faceWrap?.querySelector('.peek-img');
+      if (img) img.classList.remove('defeated', 'peeking');
+      if (typeTimer) { clearInterval(typeTimer); typeTimer = null; }
+    }
+  };
 
   // ── Defeated state: click to peek ──────────────────────────────
   let peekTimeout = null;
@@ -138,10 +178,10 @@
       if (typeTimer) clearInterval(typeTimer);
       balloon.style.width = '';
       img.classList.add('peeking');
-      balloon.textContent = '!';
+      balloon.textContent = '[Matt.exe has stopped responding]';
       peekTimeout = setTimeout(() => {
         img.classList.remove('peeking');
-        balloon.textContent = '...';
+        balloon.textContent = '[Matt.exe has stopped responding]';
       }, 1200);
     });
   }
@@ -152,367 +192,81 @@
 </script>
 
 <script>
-  // ── Constants ──────────────────────────────────────────────────
-  const NUM_NODES = 14;
-  const LINK_LEN  = 8;
-  const NATURAL_H = (NUM_NODES - 1) * LINK_LEN; // 104px
-  const MAX_BEADS = 35;
-  const CX        = 10;
-  const GRAVITY   = 0.5;
-  const DAMPING   = 0.87;
-  const ITERS     = 8;
-  const TRIGGER   = 50;
-  const MAX_PULL  = NATURAL_H * 2;
-  const CURSOR_R  = 50;
-  const CURSOR_F  = 0.15;
-  const NS        = 'http://www.w3.org/2000/svg';
+  import { createChain } from '../scripts/chain-physics.js';
 
-  const svg      = document.getElementById('chain-svg');
-  const handleHit = document.getElementById('handle-hit');
-
-  let nodes        = [];
-  let linkEls      = [];
-  let handleEl     = null;
-  let dragging     = false;
-  let handleHovered = false;
-  let dragTargetX  = CX;
-  let dragTargetY  = NATURAL_H;
-  let startDragX   = CX;
-  let startDragY   = NATURAL_H;
-  let startClientX = 0;
-  let startClientY = 0;
-  let pendingToggle = false;
-  let animId       = null;
-  let mouseX       = -9999;
-  let mouseY       = -9999;
-  let prevMouseX   = -9999;
-  let prevMouseY   = -9999;
-
-  // ── Build SVG (defs + link elements) — pixel art style ──────
-  (function buildSVG() {
-    const defs = document.createElementNS(NS, 'defs');
-
-    // Pixel bead: 6x6 square with 2px highlight
-    const sym = document.createElementNS(NS, 'symbol');
-    sym.id = 'bead-sym';
-    sym.setAttribute('overflow', 'visible');
-    const beadBase = document.createElementNS(NS, 'rect');
-    beadBase.setAttribute('x', '-3'); beadBase.setAttribute('y', '-3');
-    beadBase.setAttribute('width', '6'); beadBase.setAttribute('height', '6');
-    beadBase.setAttribute('fill', '#a0a0a0');
-    sym.appendChild(beadBase);
-    // Highlight pixel (top-left)
-    const beadHi = document.createElementNS(NS, 'rect');
-    beadHi.setAttribute('x', '-3'); beadHi.setAttribute('y', '-3');
-    beadHi.setAttribute('width', '2'); beadHi.setAttribute('height', '2');
-    beadHi.setAttribute('fill', '#d0d0d0');
-    sym.appendChild(beadHi);
-    // Shadow pixel (bottom-right)
-    const beadSh = document.createElementNS(NS, 'rect');
-    beadSh.setAttribute('x', '1'); beadSh.setAttribute('y', '1');
-    beadSh.setAttribute('width', '2'); beadSh.setAttribute('height', '2');
-    beadSh.setAttribute('fill', '#707070');
-    sym.appendChild(beadSh);
-    defs.appendChild(sym);
-
-    // Pixel handle: 14x14 square with pixel shading
-    const handleSym = document.createElementNS(NS, 'symbol');
-    handleSym.id = 'handle-sym';
-    handleSym.setAttribute('overflow', 'visible');
-    // Invisible hit area
-    const hitArea = document.createElementNS(NS, 'circle');
-    hitArea.setAttribute('r', '18');
-    hitArea.setAttribute('fill', 'transparent');
-    handleSym.appendChild(hitArea);
-    // Base square
-    const hBase = document.createElementNS(NS, 'rect');
-    hBase.setAttribute('x', '-7'); hBase.setAttribute('y', '-7');
-    hBase.setAttribute('width', '14'); hBase.setAttribute('height', '14');
-    hBase.setAttribute('fill', '#b0b0b0');
-    handleSym.appendChild(hBase);
-    // Top-left highlight (3x3)
-    const hHi = document.createElementNS(NS, 'rect');
-    hHi.setAttribute('x', '-7'); hHi.setAttribute('y', '-7');
-    hHi.setAttribute('width', '4'); hHi.setAttribute('height', '4');
-    hHi.setAttribute('fill', '#e0e0e0');
-    handleSym.appendChild(hHi);
-    // Top edge highlight
-    const hTop = document.createElementNS(NS, 'rect');
-    hTop.setAttribute('x', '-3'); hTop.setAttribute('y', '-7');
-    hTop.setAttribute('width', '10'); hTop.setAttribute('height', '2');
-    hTop.setAttribute('fill', '#d0d0d0');
-    handleSym.appendChild(hTop);
-    // Left edge highlight
-    const hLeft = document.createElementNS(NS, 'rect');
-    hLeft.setAttribute('x', '-7'); hLeft.setAttribute('y', '-3');
-    hLeft.setAttribute('width', '2'); hLeft.setAttribute('height', '10');
-    hLeft.setAttribute('fill', '#d0d0d0');
-    handleSym.appendChild(hLeft);
-    // Bottom-right shadow (3x3)
-    const hSh = document.createElementNS(NS, 'rect');
-    hSh.setAttribute('x', '3'); hSh.setAttribute('y', '3');
-    hSh.setAttribute('width', '4'); hSh.setAttribute('height', '4');
-    hSh.setAttribute('fill', '#707070');
-    handleSym.appendChild(hSh);
-    // Bottom edge shadow
-    const hBot = document.createElementNS(NS, 'rect');
-    hBot.setAttribute('x', '-7'); hBot.setAttribute('y', '5');
-    hBot.setAttribute('width', '10'); hBot.setAttribute('height', '2');
-    hBot.setAttribute('fill', '#808080');
-    handleSym.appendChild(hBot);
-    // Right edge shadow
-    const hRight = document.createElementNS(NS, 'rect');
-    hRight.setAttribute('x', '5'); hRight.setAttribute('y', '-7');
-    hRight.setAttribute('width', '2'); hRight.setAttribute('height', '10');
-    hRight.setAttribute('fill', '#808080');
-    handleSym.appendChild(hRight);
-    defs.appendChild(handleSym);
-
-    svg.appendChild(defs);
-
-    for (let i = 0; i < MAX_BEADS; i++) {
-      const el = document.createElementNS(NS, 'use');
-      el.setAttribute('href', '#bead-sym');
-      svg.appendChild(el);
-      linkEls.push(el);
-    }
-
-    // Handle element — rendered on top of beads
-    handleEl = document.createElementNS(NS, 'use');
-    handleEl.setAttribute('href', '#handle-sym');
-    handleEl.style.pointerEvents = 'none';
-    svg.appendChild(handleEl);
-  })();
-
-  // ── Init nodes — drop in from off-screen with random swing ───
-  let loopStart = performance.now();
-  const swingX = (Math.random() < 0.5 ? 1 : -1) * (15 + Math.random() * 25);
-  function initNodes() {
-    nodes.length = 0;
-    loopStart = performance.now();
-    for (let i = 0; i < NUM_NODES; i++) {
-      const restY = i * LINK_LEN;
-      const y = restY - 200;
-      const t = i / (NUM_NODES - 1);
-      const x = CX + swingX * t;
-      nodes.push({ x, y, px: x, py: y - 14 });
-    }
-  }
-  initNodes();
-
-  // ── Physics tick ──────────────────────────────────────────────
-  function tick() {
-    // Verlet integration (skip anchor at i=0)
-    for (let i = 1; i < NUM_NODES; i++) {
-      const n = nodes[i];
-      const vx = (n.x - n.px) * DAMPING;
-      const vy = (n.y - n.py) * DAMPING;
-      n.px = n.x; n.py = n.y;
-      n.x += vx; n.y += vy + GRAVITY;
-    }
-
-    // Cursor influence — nudge nodes sideways when cursor brushes past
-    const cvx = mouseX - prevMouseX, cvy = mouseY - prevMouseY;
-    const speed = Math.sqrt(cvx * cvx + cvy * cvy);
-    if (speed > 0.3) {
-      for (let i = 1; i < NUM_NODES; i++) {
-        const n = nodes[i];
-        const dx = n.x - mouseX, dy = n.y - mouseY;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < CURSOR_R * CURSOR_R) {
-          const dist = Math.sqrt(d2);
-          const falloff = 1 - dist / CURSOR_R;
-          // Only apply tangential component — removes the repulsion on approach
-          const nx = dx / dist, ny = dy / dist;
-          const dot = cvx * nx + cvy * ny;
-          const tx = cvx - dot * nx, ty = cvy - dot * ny;
-          n.x += tx * falloff * CURSOR_F;
-          n.y += ty * falloff * CURSOR_F;
-        }
-      }
-    }
-
-    // Handle sticky — when hovering, handle gently follows cursor
-    if (!dragging && handleHovered) {
-      const last = nodes[NUM_NODES - 1];
-      const dx = mouseX - last.x, dy = mouseY - last.y;
-      const STICKY_F = 0.06;
-      last.x += dx * STICKY_F;
-      last.y += dy * STICKY_F;
-    }
-
-    // Constraint solving
-    for (let iter = 0; iter < ITERS; iter++) {
-      nodes[0].x = CX; nodes[0].y = 0;
-      for (let i = 0; i < NUM_NODES - 1; i++) {
-        const a = nodes[i], b = nodes[i + 1];
-        const dx = b.x - a.x, dy = b.y - a.y;
-        const d = Math.sqrt(dx * dx + dy * dy) || 0.001;
-        const c = (d - LINK_LEN) / d * 0.5;
-        if (i > 0) { a.x += dx * c; a.y += dy * c; }
-        b.x -= dx * c; b.y -= dy * c;
-      }
-      if (dragging) {
-        nodes[NUM_NODES - 1].x = dragTargetX;
-        nodes[NUM_NODES - 1].y = dragTargetY;
-      }
-    }
-
-    if (dragging) {
-      const pullDist = Math.sqrt((dragTargetX - CX) ** 2 + dragTargetY ** 2) - NATURAL_H;
-      handleEl.style.opacity = (pullDist / TRIGGER) > 0.75 ? '0.5' : '1';
-    }
-  }
-
-  // ── Interpolate a point at fraction t (0..1) along the rope ──
-  function pointOnRope(t) {
-    const segs = []; let total = 0;
-    for (let i = 0; i < NUM_NODES - 1; i++) {
-      const dx = nodes[i+1].x - nodes[i].x, dy = nodes[i+1].y - nodes[i].y;
-      const l = Math.sqrt(dx*dx + dy*dy);
-      segs.push(l); total += l;
-    }
-    const target = t * total;
-    let acc = 0;
-    for (let i = 0; i < NUM_NODES - 1; i++) {
-      const next = acc + segs[i];
-      if (next >= target || i === NUM_NODES - 2) {
-        const lt = segs[i] > 0 ? Math.min(1, (target - acc) / segs[i]) : 0;
-        return {
-          x: nodes[i].x + (nodes[i+1].x - nodes[i].x) * lt,
-          y: nodes[i].y + (nodes[i+1].y - nodes[i].y) * lt,
-        };
-      }
-      acc = next;
-    }
-    return { x: nodes[NUM_NODES-1].x, y: nodes[NUM_NODES-1].y };
-  }
-
-  // ── Render ────────────────────────────────────────────────────
-  function render() {
-    const last = nodes[NUM_NODES - 1];
-    svg.setAttribute('height', Math.max(last.y + 22, 20));
-
-    // Measure rope and place beads at even intervals (more beads when pulled)
-    let ropeLen = 0;
-    for (let i = 0; i < NUM_NODES - 1; i++) {
-      const dx = nodes[i+1].x - nodes[i].x, dy = nodes[i+1].y - nodes[i].y;
-      ropeLen += Math.sqrt(dx*dx + dy*dy);
-    }
-    // Beads indexed from bottom — skip i=0 (handle occupies that position)
-    const numBeads = Math.min(MAX_BEADS, Math.floor(ropeLen / LINK_LEN));
-
-    for (let i = 0; i < MAX_BEADS; i++) {
-      const el = linkEls[i];
-      const bi = i + 1; // offset by 1 so beads start above the handle
-      if (i < numBeads) {
-        const t = Math.max(0, 1 - (bi * LINK_LEN) / ropeLen);
-        const pt = pointOnRope(t);
-        el.setAttribute('transform', `translate(${pt.x},${pt.y})`);
-        el.style.display = '';
+  // ── Dark mode chain (uses shared physics module) ───────────────
+  const darkChain = createChain({
+    svgId: 'chain-svg',
+    handleHitId: 'handle-hit',
+    rootId: 'chain-root',
+    cursorLabel: 'Pull',
+    handleSymbolId: 'handle-sym',
+    buildHandleSymbol(NS) {
+      const sym = document.createElementNS(NS, 'symbol');
+      const hit = document.createElementNS(NS, 'circle');
+      hit.setAttribute('r', '18'); hit.setAttribute('fill', 'transparent');
+      sym.appendChild(hit);
+      const base = document.createElementNS(NS, 'rect');
+      base.setAttribute('x', '-7'); base.setAttribute('y', '-7');
+      base.setAttribute('width', '14'); base.setAttribute('height', '14');
+      base.setAttribute('fill', '#b0b0b0');
+      sym.appendChild(base);
+      const hi = document.createElementNS(NS, 'rect');
+      hi.setAttribute('x', '-7'); hi.setAttribute('y', '-7');
+      hi.setAttribute('width', '4'); hi.setAttribute('height', '4');
+      hi.setAttribute('fill', '#e0e0e0');
+      sym.appendChild(hi);
+      const ht = document.createElementNS(NS, 'rect');
+      ht.setAttribute('x', '-3'); ht.setAttribute('y', '-7');
+      ht.setAttribute('width', '10'); ht.setAttribute('height', '2');
+      ht.setAttribute('fill', '#d0d0d0');
+      sym.appendChild(ht);
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', '-7'); hl.setAttribute('y', '-3');
+      hl.setAttribute('width', '2'); hl.setAttribute('height', '10');
+      hl.setAttribute('fill', '#d0d0d0');
+      sym.appendChild(hl);
+      const sh = document.createElementNS(NS, 'rect');
+      sh.setAttribute('x', '3'); sh.setAttribute('y', '3');
+      sh.setAttribute('width', '4'); sh.setAttribute('height', '4');
+      sh.setAttribute('fill', '#707070');
+      sym.appendChild(sh);
+      const sb = document.createElementNS(NS, 'rect');
+      sb.setAttribute('x', '-7'); sb.setAttribute('y', '5');
+      sb.setAttribute('width', '10'); sb.setAttribute('height', '2');
+      sb.setAttribute('fill', '#808080');
+      sym.appendChild(sb);
+      const sr = document.createElementNS(NS, 'rect');
+      sr.setAttribute('x', '5'); sr.setAttribute('y', '-7');
+      sr.setAttribute('width', '2'); sr.setAttribute('height', '10');
+      sr.setAttribute('fill', '#808080');
+      sym.appendChild(sr);
+      return sym;
+    },
+    onTrigger() {
+      const html = document.documentElement;
+      html.classList.toggle('dark');
+      localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+      // Delay glow clipping so it doesn't interfere with the transition
+      const matt = document.querySelector('.hero-matt');
+      const sten = document.querySelector('.hero-stenback');
+      if (html.classList.contains('dark')) {
+        setTimeout(() => {
+          matt?.classList.add('glow-clip');
+          sten?.classList.add('glow-clip');
+        }, 50);
       } else {
-        el.style.display = 'none';
+        matt?.classList.remove('glow-clip');
+        sten?.classList.remove('glow-clip');
       }
-    }
-
-    handleEl.setAttribute('transform', `translate(${last.x},${last.y + 5})`);
-    // Position the HTML hit-area overlay on top of the SVG handle
-    const svgRect = svg.getBoundingClientRect();
-    handleHit.style.left = `${last.x}px`;
-    handleHit.style.top = `${last.y + 5}px`;
-  }
-
-  // ── Loop (stops when settled + cursor away) ───────────────────
-  function settled() {
-    return nodes.every((n, i) =>
-      i === 0 || (Math.abs(n.x - n.px) < 0.05 && Math.abs(n.y - n.py) < 0.05));
-  }
-  function cursorNear() {
-    return nodes.some(n => (n.x - mouseX) ** 2 + (n.y - mouseY) ** 2 < CURSOR_R ** 2);
-  }
-  function loop() {
-    tick(); render();
-    const dropping = performance.now() - loopStart < 2500;
-    animId = (dropping || !settled() || dragging || cursorNear()) ? requestAnimationFrame(loop) : null;
-  }
-  function run() { if (!animId) animId = requestAnimationFrame(loop); }
-
-  // ── Pointer events (on HTML overlay for reliable cursor) ─────
-  handleHit.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    dragging = true; pendingToggle = false;
-    startClientX = e.clientX; startClientY = e.clientY;
-    startDragX = nodes[NUM_NODES - 1].x;
-    startDragY = nodes[NUM_NODES - 1].y;
-    handleHit.setPointerCapture(e.pointerId);
-    document.body.classList.add('chain-grabbing');
-    window.__cursorRing?.hideAll();
-    run();
+    },
   });
-
-  handleHit.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    let tx = startDragX + (e.clientX - startClientX);
-    let ty = startDragY + (e.clientY - startClientY);
-    // Cap total pull distance from anchor
-    const tdx = tx - CX, tdy = ty;
-    const dist = Math.sqrt(tdx * tdx + tdy * tdy);
-    if (dist > MAX_PULL) {
-      const s = MAX_PULL / dist;
-      tx = CX + tdx * s; ty = tdy * s;
-    }
-    dragTargetX = tx; dragTargetY = ty;
-    const pullDist = dist - NATURAL_H;
-    if (pullDist >= TRIGGER) pendingToggle = true;
-    run();
-  });
-
-  handleHit.addEventListener('pointerup', e => {
-    if (!dragging) return;
-    dragging = false;
-    handleEl.style.opacity = '1';
-    document.body.classList.remove('chain-grabbing');
-    window.__cursorRing?.unhideAll();
-    if (pendingToggle) {
-      document.documentElement.classList.toggle('dark');
-      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    }
-    pendingToggle = false;
-    dragTargetX = CX; dragTargetY = NATURAL_H;
-    run();
-  });
-
-  // ── Cursor ring for chain handle ─────────────────────────────
-  handleHit.addEventListener('mouseenter', () => {
-    handleHovered = true;
-    window.__cursorRing?.show();
-    window.__cursorRing?.showLabel();
-  });
-  handleHit.addEventListener('mouseleave', () => {
-    handleHovered = false;
-    window.__cursorRing?.hide();
-    window.__cursorRing?.hideLabel();
-  });
-
-  // ── Cursor tracking ───────────────────────────────────────────
-  document.addEventListener('mousemove', e => {
-    prevMouseX = mouseX; prevMouseY = mouseY;
-    const r = svg.getBoundingClientRect();
-    mouseX = e.clientX - r.left;
-    mouseY = e.clientY - r.top;
-    run();
-  });
-
-  // ── Init (chain stays hidden until hero intro finishes) ──────
-  // Don't render or run yet — wait for revealChain()
-
 
   // ── Match block width to name heading ───────────────────────────
   const heroName = document.getElementById('hero-name');
   const heroBlock = document.getElementById('hero-block');
   function matchBlockWidth() {
     if (heroName && heroBlock) {
-      // Reset to auto first so w-max can take effect
       heroBlock.style.width = '';
       requestAnimationFrame(() => {
         heroBlock.style.width = heroName.offsetWidth + 'px';
@@ -520,13 +274,10 @@
     }
   }
   document.fonts.ready.then(() => {
-    // Double rAF to ensure layout is settled after font swap
     requestAnimationFrame(() => requestAnimationFrame(() => {
       matchBlockWidth();
-      // Start intro animations only after width is locked
       requestAnimationFrame(() => {
         heroBlock?.classList.add('intro-ready');
-        // Clean up face intro after animation so hover transition takes over
         const faceImg = document.querySelector('.intro-face');
         if (faceImg) {
           faceImg.addEventListener('animationend', () => {
@@ -534,14 +285,13 @@
             faceImg.style.transform = '';
           });
         }
-        // Reveal chain after hero intro completes
-        setTimeout(() => {
-          const chainRoot = document.getElementById('chain-root');
-          if (chainRoot) chainRoot.style.visibility = '';
-          initNodes();
-          render();
-          run();
-        }, 700);
+        // Reveal dark mode chain after hero intro completes
+        setTimeout(() => darkChain.reveal(), 700);
+        // Apply glow clipping if already in dark mode
+        if (document.documentElement.classList.contains('dark')) {
+          document.querySelector('.hero-matt')?.classList.add('glow-clip');
+          document.querySelector('.hero-stenback')?.classList.add('glow-clip');
+        }
       });
     }));
   });
@@ -549,6 +299,12 @@
 </script>
 
 <style>
+  .shelf-mask {
+    background: linear-gradient(to right, transparent, #f7f7f7 20%, #f7f7f7 80%, transparent);
+  }
+  :global(.dark) .shelf-mask {
+    background: linear-gradient(to right, transparent, #000f1d 20%, #000f1d 80%, transparent);
+  }
   .shelf-line {
     background: linear-gradient(to right, transparent, #9a9088 20%, #9a9088 80%, transparent);
   }
@@ -564,6 +320,7 @@
     overflow: hidden;
   }
   .hero-matt::after { display: none; }
+  .glow-clip { clip-path: inset(0); }
   .hero-stenback {
     font-family: 'ObviouslyCondensed', 'Obviously', sans-serif;
     font-size: clamp(6rem, 16.5vw, 13.5rem);
@@ -593,7 +350,7 @@
     left: 60%;
     /* Bottom of face sits below gap center between the two names */
     top: auto;
-    bottom: 42%;
+    bottom: calc(42% - 1px);
     transform: translateX(-50%);
     z-index: 10;
   }

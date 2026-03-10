@@ -47,6 +47,7 @@
     },
     showLabel() { ring.classList.add('cursor-ring--pull-label'); },
     hideLabel() { ring.classList.remove('cursor-ring--pull-label'); },
+    setLabel(text) { const el = ring.querySelector('.cursor-label'); if (el) el.textContent = text; },
     hideAll() {
       ring.classList.add('cursor-ring--hidden');
       ring.classList.remove('cursor-ring--pull-label');
@@ -374,7 +375,7 @@
     font-family: 'PPNeueBit', monospace;
     font-weight: 700;
     font-size: 22px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
     white-space: nowrap;
     opacity: 0;
     transition: opacity 200ms ease;
