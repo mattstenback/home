@@ -79,7 +79,7 @@
     clearAllMushrooms();
     faceScale = 1;
     const wrap = document.querySelector('.face-container .face-wrap');
-    if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; wrap.style.filter = ''; }
+    if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; }
   });
 
   // ── Mushroom Sprite ──────────────────────────────────────────
@@ -249,11 +249,14 @@
     faceScale += 0.20;
     const wrap = document.querySelector('.face-container .face-wrap');
     if (wrap) {
-      wrap.style.transition = 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1), filter 0.15s';
+      wrap.style.transition = 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
       wrap.style.width = `calc(clamp(80px, 12.5vw, 182px) * ${faceScale})`;
       wrap.style.height = `calc(clamp(96px, 15vw, 219px) * ${faceScale})`;
-      wrap.style.filter = 'brightness(1.3)';
-      setTimeout(() => { wrap.style.filter = ''; }, 200);
+      const img = wrap.querySelector('.peek-img');
+      if (img) {
+        img.style.filter = 'brightness(1.3)';
+        setTimeout(() => { img.style.filter = ''; }, 200);
+      }
     }
     playGrowSound();
   }
@@ -263,7 +266,7 @@
     resetFaceScale() {
       faceScale = 1;
       const wrap = document.querySelector('.face-container .face-wrap');
-      if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; wrap.style.filter = ''; }
+      if (wrap) { wrap.style.transition = ''; wrap.style.width = ''; wrap.style.height = ''; }
     },
     clear() { clearAllMushrooms(); }
   };

@@ -83,15 +83,13 @@
     'I can see you hovering',
     "We've been over this",
     "I'm starting to worry about you",
-    "This wasn't in my contract",
-    '!!!',
+    '...',
     'I only have so many lines',
     "You've seen them all now",
     "There's no secret ending",
     '...or is there?',
-    "No, really... whoops, ignore that!",               // PHASE 1 trigger
-    'You could just read the source code',
-    "I'm not hiding anything else, I promise",          // PHASE navi trigger
+    "No, really... whoops, ignore that thing up there!", // PHASE 1 trigger
+    "Nothing else to see... ah",                        // PHASE navi trigger
     'Alright... If you insist...',                      // PHASE 2 trigger
     "Look at all the fun we're having",
     '..............................',
@@ -103,11 +101,10 @@
   ];
 
   // Phase triggers: seqIndex value AFTER increment → phase name
-  // fixed[21] = "whoops, ignore that!" → seq index 3+21=24, after increment = 25
-  // fixed[23] = "not hiding anything else" → seq index 3+23=26, after increment = 27
-  // fixed[24] = "Alright... If you insist..." → seq index 3+24=27, after increment = 28
-  // fixed[32] = "[Matt.exe has stopped responding]" → seq index 3+32=35, after increment = 36
-  const PHASE_TRIGGERS = { 25: 'phase-1', 27: 'phase-navi', 28: 'phase-2' };
+  // fixed[20] = "whoops, ignore that thing up there!" → seq index 3+20=23, after increment = 24
+  // fixed[21] = "Nothing else to see... ah" → seq index 3+21=24, after increment = 25
+  // fixed[22] = "Alright... If you insist..." → seq index 3+22=25, after increment = 26
+  const PHASE_TRIGGERS = { 24: 'phase-1', 25: 'phase-navi', 26: 'phase-2' };
 
   let sequence = [...shuffle([...hellos]), ...fixed];
   let seqIndex = 0;
