@@ -25,10 +25,10 @@ module.exports = {
 		},
 		fontFamily: {
 			'serif': ['DegularText', 'serif'],
-			'display': ['Obviously', 'DegularDisplay', 'irregardless-variable', 'sans-serif'],
+			'display': ['Obviously', 'sans-serif'],
 			'body': ['DegularText', 'sans-serif'],
 			'sans': ['PPNeueBit', 'monospace'],
-			'mono': ['VulfMonoLightItalic', 'monospace'],
+			'mono': ['DegularText', 'serif'],
 		},
 		extend: {
 			rotate: {

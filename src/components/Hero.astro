@@ -1,7 +1,7 @@
 <div class="relative min-h-[100dvh] flex flex-col px-2 md:px-10">
 
   <!-- Hero content — centered -->
-  <div class="pt-[calc(50dvh-12rem)] md:pt-[calc(50dvh-18rem)] pb-8 md:pb-12 flex flex-col items-center">
+  <div class="pt-[max(140px,calc(50dvh-12rem))] md:pt-[max(140px,calc(50dvh-18rem))] pb-8 md:pb-12 flex flex-col items-center">
 
     <!-- Name + body copy — width driven by h1 via JS after font load -->
     <div id="hero-block" class="text-center md:text-left min-w-0">
@@ -22,10 +22,10 @@
         <div class="pixel-corners speech-balloon" id="speech-balloon">Hello there!</div>
         <span class="block hero-stenback intro-fade" style="opacity:0;--intro-delay:120ms"><span class="kern-S">S</span><span class="kern-T3">T</span><span class="kern-E">E</span><span class="kern-N">N</span><span class="kern-B">B</span><span class="kern-A2">A</span><span class="kern-C">C</span><span class="kern-K">K</span></span>
       </h1>
-      <div id="hero-body" class="mt-10 md:mt-12 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
+      <div id="hero-body" class="mt-5 md:mt-6 text-left intro-fade" style="opacity:0;--intro-delay:240ms">
         <div>
           <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4] mb-3">
-            I make products that change behavior. I'm a generalist with twenty years experience across games, mobile, web, biotech, and legal tech. I care about craft and impact, and I have a bias for action.
+            I make products that spark joy and shape behaviour. I'm a generalist with twenty years experience across games, mobile, web, biotech, and legal tech. I care about craft and impact, and I have a bias for action.
           </p>
           <p class="font-body text-[18px] md:text-[22px] text-indigo dark:text-paper leading-[1.4] mb-3">
             Currently leading product at <a href="https://spellbook.legal" target="_blank">Spellbook</a>.
@@ -67,7 +67,7 @@
 
   const hellos = ['Hello there!', 'Well met!', 'Greetings, stranger'];
   const fixed = [
-    '...', '...',
+    '...',
     '...our princess is in another castle',
     'The cake is a lie',
     'Stay awhile and listen',
@@ -473,10 +473,8 @@
     document.body.classList.remove('chain-grabbing');
     window.__cursorRing?.unhideAll();
     if (pendingToggle) {
-      document.documentElement.classList.add('theme-transitioning');
       document.documentElement.classList.toggle('dark');
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
     }
     pendingToggle = false;
     dragTargetX = CX; dragTargetY = NATURAL_H;
@@ -558,7 +556,7 @@
   }
 
   .hero-matt {
-    font-size: clamp(8rem, 21vw, 18rem);
+    font-size: clamp(8rem, 22vw, 18rem);
     line-height: 0.85;
     position: relative;
     letter-spacing: 0.02em;
@@ -568,7 +566,7 @@
   .hero-matt::after { display: none; }
   .hero-stenback {
     font-family: 'ObviouslyCondensed', 'Obviously', sans-serif;
-    font-size: clamp(6rem, 15.8vw, 13.5rem);
+    font-size: clamp(6rem, 16.5vw, 13.5rem);
     line-height: 0.85;
     margin-top: 0.016em;
     padding-bottom: 0.15em;
@@ -596,7 +594,7 @@
     left: 60%;
     /* Bottom of face sits below gap center between the two names */
     top: auto;
-    bottom: 35%;
+    bottom: 42%;
     transform: translateX(-50%);
     z-index: 10;
   }
@@ -675,35 +673,28 @@
   }
 
   /* Dark mode — CRT scanlines + phosphor glow */
-  :global(.theme-transitioning) .hero-matt,
-  :global(.theme-transitioning) .hero-stenback {
-    background-image: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-    -webkit-text-fill-color: unset !important;
-    text-shadow: none !important;
-    filter: none !important;
-  }
-
   :global(.dark) .hero-matt,
   :global(.dark) .hero-stenback {
-    background-image:
-      repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 2px,
-        rgba(0,0,0,0.12) 2px,
-        rgba(0,0,0,0.12) 4px
-      ),
-      linear-gradient(#9bbc0f, #9bbc0f);
-    background-size: 100% 4px, 100% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: #9bbc0f;
     text-shadow:
-      0 0 8px rgba(155,188,15,0.22),
-      0 0 25px rgba(155,188,15,0.1),
-      0 0 50px rgba(155,188,15,0.04);
+      0 0 8px rgba(155,188,15,0.35),
+      0 0 25px rgba(155,188,15,0.15),
+      0 0 50px rgba(155,188,15,0.06);
+  }
+  :global(.dark) .hero-matt::before,
+  :global(.dark) .hero-stenback::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1;
   }
 </style>
