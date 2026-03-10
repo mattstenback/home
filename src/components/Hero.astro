@@ -540,7 +540,7 @@
           initNodes();
           render();
           run();
-        }, 600);
+        }, 700);
       });
     }));
   });
@@ -560,8 +560,7 @@
     line-height: 0.85;
     position: relative;
     letter-spacing: 0.02em;
-    padding-bottom: 0.15em;
-    margin-bottom: -0.15em;
+    overflow: hidden;
   }
   .hero-matt::after { display: none; }
   .hero-stenback {
@@ -569,11 +568,10 @@
     font-size: clamp(6rem, 16.5vw, 13.5rem);
     line-height: 0.85;
     margin-top: 0.016em;
-    padding-bottom: 0.15em;
-    margin-bottom: -0.15em;
     position: relative;
     z-index: 1;
     letter-spacing: 0.02em;
+    overflow: hidden;
   }
 
   /* Per-letter kerning — MATT */
@@ -599,8 +597,8 @@
     z-index: 10;
   }
   .face-container .face-wrap {
-    width: clamp(80px, 11.4vw, 182px);
-    height: clamp(96px, 13.7vw, 219px);
+    width: clamp(80px, 12.5vw, 182px);
+    height: clamp(96px, 15vw, 219px);
     overflow: hidden;
   }
   .face-container::before {
